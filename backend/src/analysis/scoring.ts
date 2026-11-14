@@ -17,7 +17,7 @@ export const SCORE_WEIGHTS = {
 } as const;
 
 export const PRIOR_COMMITS = 5;
-const POINTS_FOR_MAX_SCORE_PER_COMMIT = 2;
+export const POINTS_FOR_MAX_SCORE_PER_COMMIT = 2;
 
 export interface ScoreInputs {
     commits: number;

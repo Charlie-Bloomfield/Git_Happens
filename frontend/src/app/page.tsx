@@ -9,8 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Spotlight } from "@/components/ui/spotlight-new";
-// Import the rules file directly (not "@backend/analysis") so Octokit never reaches the client bundle.
-import { ACHIEVEMENT_RULES, FALLBACK_ACHIEVEMENT } from "@backend/analysis/achievements";
+import { AwardChip, ChargeBoard, EvidenceBoard, ScoreExplainer, ScoreMeter } from "@/components/insights";
 import type { DetailedRepositoryAnalysis, DeveloperProfile } from "@backend/analysis";
 import { parseRepository } from "@/lib/repository";
 
@@ -19,10 +18,6 @@ type State =
   | { status: "loading" }
   | { status: "ready"; analysis: DetailedRepositoryAnalysis }
   | { status: "error"; error: ApiError };
-
-const CRITERIA: Record<string, string> = Object.fromEntries(
-  [...ACHIEVEMENT_RULES, FALLBACK_ACHIEVEMENT].map((rule) => [rule.title, rule.criteria]),
-);
 
 const ERROR_COPY: Record<string, { title: string; detail: string }> = {
   INVALID_REPOSITORY: { title: "That's not a repo.", detail: "Enter owner/repo or a public https://github.com/owner/repo URL." },
@@ -43,6 +38,8 @@ export default function Home() {
   const [copied, setCopied] = useState(false);
   const [state, setState] = useState<State>({ status: "loading" });
   const [attempt, setAttempt] = useState(0);
+  const [tagFilter, setTagFilter] = useState<string | null>(null);
+  const [explained, setExplained] = useState<string | null>(null);
   const resultRef = useRef<HTMLElement>(null);
   const imagePath = `/api/blame.svg?repo=${encodeURIComponent(repository)}`;
   const snippet = `![Git Happens leaderboard](${origin}${imagePath})`;
@@ -60,6 +57,8 @@ export default function Home() {
   useEffect(() => {
     const controller = new AbortController();
     setState({ status: "loading" });
+    setTagFilter(null);
+    setExplained(null);
     fetch(`/api/analysis?repo=${encodeURIComponent(repository)}`, { signal: controller.signal })
       .then(async (response) => {
         const body = await response.json().catch(() => null);
@@ -163,11 +162,23 @@ export default function Home() {
         </Card>
       </motion.div>
 
-      {analysis && developers.length > 0 ? <RapSheet developers={developers} /> : null}
+      {analysis && developers.length > 0 ? <>
+        <ChargeBoard developers={developers} active={tagFilter} onSelect={setTagFilter} />
+        <RapSheet developers={developers} filter={tagFilter} onFilter={(title) => {
+          setTagFilter(title === tagFilter ? null : title);
+          document.getElementById("charges")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }} onExplain={(username) => {
+          setExplained(username);
+          document.getElementById("score-maths")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }} />
+      </> : null}
       {analysis && developers.length === 0 ? <p className="empty-note">Only merges and bots here. Nobody to blame… yet.</p> : null}
     </section>
 
-    <section className="embed shell" aria-labelledby="embed-title"><div><div className="section-kicker"><span>02</span> / THE PUBLIC RECORD</div><h2 id="embed-title">Wear your <span>shame.</span></h2><p>Every README deserves a warning label. Copy the embed and let visitors see the verdict. GitHub caches images, so updates can lag.</p><ArrowDownRight size={30} className="embed-arrow" /></div><Card className="embed-code"><div className="embed-label">README.MD <span>MARKDOWN / IMAGE</span></div><div className="code-row"><code>{snippet}</code><Button type="button" onClick={copy} disabled={state.status !== "ready"} className="copy-button" aria-label="Copy README Markdown">{copied ? <><Check size={16} /> Copied</> : <><Copy size={16} /> Copy</>}</Button></div></Card></section>
+    {analysis && developers.length > 0 ? <ScoreExplainer developers={developers} selected={explained} onSelect={setExplained} /> : null}
+    {analysis && developers.length > 0 ? <EvidenceBoard analysis={analysis} origin={origin} /> : null}
+
+    <section className="embed shell" aria-labelledby="embed-title"><div><div className="section-kicker"><span>04</span> / THE PUBLIC RECORD</div><h2 id="embed-title">Wear your <span>shame.</span></h2><p>Every README deserves a warning label. Copy the leaderboard embed and let visitors see the verdict. Every chart on the evidence board has its own embed too. GitHub caches images, so updates can lag.</p><ArrowDownRight size={30} className="embed-arrow" /></div><Card className="embed-code"><div className="embed-label">README.MD <span>MARKDOWN / IMAGE</span></div><div className="code-row"><code>{snippet}</code><Button type="button" onClick={copy} disabled={state.status !== "ready"} className="copy-button" aria-label="Copy README Markdown">{copied ? <><Check size={16} /> Copied</> : <><Copy size={16} /> Copy</>}</Button></div></Card></section>
 
     <footer className="shell footer"><span className="footer-brand">git<span>happens</span>.</span><span>Built for laughs. Based on commits, not competence.</span><span>© 2026 GIT HAPPENS</span></footer>
   </main></MotionConfig>;
@@ -197,23 +208,27 @@ function MetaNote({ analysis }: { analysis: DetailedRepositoryAnalysis }) {
 
 const RAP_SHEET_LIMIT = 12;
 
-function RapSheet({ developers }: { developers: DeveloperProfile[] }) {
+function RapSheet({ developers, filter, onFilter, onExplain }: { developers: DeveloperProfile[]; filter: string | null; onFilter: (title: string) => void; onExplain: (username: string) => void }) {
   const [showAll, setShowAll] = useState(false);
-  const visible = showAll ? developers : developers.slice(0, RAP_SHEET_LIMIT);
+  // Keep each suspect's overall rank even when filtered.
+  const ranked = developers.map((developer, index) => ({ developer, rank: index + 1 }));
+  const matching = filter ? ranked.filter(({ developer }) => developer.achievements.includes(filter)) : ranked;
+  const visible = showAll || filter ? matching : matching.slice(0, RAP_SHEET_LIMIT);
   return <div className="rap-sheet">
-    <div className="section-kicker">THE RAP SHEET</div>
+    <div className="section-kicker">THE RAP SHEET{filter ? <span className="filter-note"> · {matching.length} charged with {filter}</span> : null}</div>
     <ol>
-      {visible.map((developer, index) => {
+      {visible.map(({ developer, rank }) => {
         // Line stats are only fetched for the newest commits; unknown is not the same as zero.
         const hasLineStats = developer.commitsWithLineStats > 0;
-        return <li key={developer.username} className="suspect">
+        return <li key={developer.username} className={`suspect${filter ? " is-match" : ""}`}>
         <div className="suspect-head">
-          <span className="suspect-rank">{pad(index + 1)}</span>
+          <span className="suspect-rank">{pad(rank)}</span>
           <span className="suspect-name">{developer.username}</span>
-          <span className="suspect-score" title="Blame score (0–100)">{developer.blameScore}</span>
+          <button type="button" className="suspect-score" onClick={() => onExplain(developer.username)} title="How was this calculated?" aria-label={`Blame score ${developer.blameScore}. Show how it was calculated`}>{developer.blameScore}<span>how?</span></button>
         </div>
+        <ScoreMeter developer={developer} />
         <div className="suspect-awards">
-          {developer.achievements.map((title) => <span key={title} className="award" title={CRITERIA[title]}>{title}</span>)}
+          {developer.achievements.map((title) => <AwardChip key={title} title={title} active={title === filter} onSelect={onFilter} />)}
         </div>
         <dl className="suspect-stats">
           <Stat label="Commits" value={developer.commits} />
@@ -226,7 +241,7 @@ function RapSheet({ developers }: { developers: DeveloperProfile[] }) {
       </li>;
       })}
     </ol>
-    {developers.length > RAP_SHEET_LIMIT ? <Button type="button" variant="outline" className="show-all" onClick={() => setShowAll(!showAll)} aria-expanded={showAll}>
+    {!filter && developers.length > RAP_SHEET_LIMIT ? <Button type="button" variant="outline" className="show-all" onClick={() => setShowAll(!showAll)} aria-expanded={showAll}>
       {showAll ? "Show top suspects only" : `Show all ${developers.length} suspects`}
     </Button> : null}
   </div>;

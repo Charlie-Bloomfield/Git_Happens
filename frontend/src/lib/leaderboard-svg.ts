@@ -1,9 +1,9 @@
 import type { RepositoryAnalysis } from "@shared/analysis";
 
-const FONT = "'Space Grotesk', 'Segoe UI', Helvetica, Arial, sans-serif";
+export const FONT = "'Space Grotesk', 'Segoe UI', Helvetica, Arial, sans-serif";
 const plural = (count: number, word: string) => `${count} ${word}${count === 1 ? "" : "s"}`;
 
-function escapeXml(value: string): string {
+export function escapeXml(value: string): string {
   return value.replace(/[&<>"']/g, (character) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&apos;",
   })[character] ?? character);
