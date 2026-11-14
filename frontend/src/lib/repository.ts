@@ -1,4 +1,5 @@
-const segment = /^[A-Za-z0-9](?:[A-Za-z0-9._-]{0,98}[A-Za-z0-9])?$/;
+const ownerPattern = /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$/;
+const repoPattern = /^[A-Za-z0-9._-]{1,100}$/;
 
 export function parseRepository(input: string): string | null {
   let value = input.trim();
@@ -14,6 +15,6 @@ export function parseRepository(input: string): string | null {
   }
 
   const parts = value.replace(/\.git$/i, "").split("/");
-  if (parts.length !== 2 || !parts.every((part) => segment.test(part))) return null;
+  if (parts.length !== 2 || !ownerPattern.test(parts[0]) || !repoPattern.test(parts[1]) || parts[1] === "." || parts[1] === "..") return null;
   return `${parts[0]}/${parts[1]}`;
 }

@@ -2,23 +2,23 @@
 
 ## Frontend status
 
-The Next.js frontend is in `frontend/`, the canonical data contract is in `shared/`, and future backend code can live in `backend/`. The current UI and SVG use clearly labelled demo data while Charlie's GitHub analyser is developed.
+The Next.js app is in `frontend/`, Charlie's analyser is in `backend/`, and both use the contract in `shared/`. The landing page starts with a labelled demo preview and fetches real GitHub analysis after you submit a public repository.
 
 ```sh
 cd frontend
-npm ci
+npm run install:all
 npm run dev
 ```
 
-Open `http://localhost:3000`. Enter `owner/repo` or an HTTPS GitHub repository URL to preview the demo card and copy its README Markdown. The copied localhost URL will only work locally; deploy the app before embedding it in a public README.
+Open `http://localhost:3000`. Enter `owner/repo` or an HTTPS GitHub repository URL to see the live leaderboard and copy its README Markdown. The copied localhost URL works locally; deploy the app to a public HTTPS domain before embedding it in a public README. Set a server-side `GITHUB_TOKEN` for a higher GitHub API limit.
 
 Documentation:
 
 - [Frontend status](docs/01-frontend-status.md) — completed work and limitations.
 - [Frontend architecture](docs/02-frontend-architecture.md) — layout, data flow, and shared contract.
-- [Running and integration](docs/03-running-and-integration.md) — commands, API behavior, and live analyser handoff.
+- [Running and integration](docs/03-running-and-integration.md) — commands, API behavior, and deployment notes.
 
-Current status: the form, SVG renderer, endpoint, and copy interaction work with demo data. GitHub fetching, scoring, caching of analysis results, and deployment remain to be integrated.
+Current status: live GitHub fetching, scoring, the JSON and SVG routes, in-memory analysis caching, loading and error states, and the copy interaction work locally. Public deployment and a README embed test remain.
 
 **Team:** You and Charlie  
 **Theme:** Hate the User  
@@ -59,6 +59,7 @@ export interface DeveloperStats {
   commits: number;
   reverts: number;
   lateNightCommits: number;
+  largeCommits: number;
   suspiciousMessages: number;
   linesChanged: number;
   blameScore: number;
@@ -89,26 +90,26 @@ function generateLeaderboardSVG(
 ): string;
 ```
 
-Use mock `RepositoryAnalysis` data until the live integration is ready. Keep work on separate branches and merge early.
+The live integration now uses `analyseRepository(owner, repo)`. The mock fixture remains only for the initial labelled preview.
 
 ## MVP acceptance criteria — by hour 5
 
-- [ ] User can enter a public GitHub repository URL or `owner/repo`.
-- [ ] Server fetches recent commit history from GitHub.
-- [ ] Analysis returns per-developer statistics and a reproducible score.
-- [ ] At least three achievements are calculated from real data.
-- [ ] SVG endpoint returns valid `image/svg+xml`.
-- [ ] Landing page displays the generated leaderboard.
-- [ ] README Markdown snippet can be copied.
+- [x] User can enter a public GitHub repository URL or `owner/repo`.
+- [x] Server fetches recent commit history from GitHub.
+- [x] Analysis returns per-developer statistics and a reproducible score.
+- [x] At least three achievements are calculated from real data.
+- [x] SVG endpoint returns valid `image/svg+xml`.
+- [x] Landing page displays the generated leaderboard.
+- [x] README Markdown snippet can be copied.
 
 ## Deployment acceptance criteria — by hour 8
 
 - [ ] Public HTTPS endpoint works without signing in for public repositories.
 - [ ] Embedding the image in a GitHub README renders correctly.
 - [ ] GitHub token is server-side only.
-- [ ] Input validation and error responses handle nonexistent/private repositories.
-- [ ] Results are cached to reduce GitHub API usage and response time.
-- [ ] SVG text is escaped to prevent markup injection.
+- [x] Input validation and error responses handle nonexistent/private repositories.
+- [x] Results are cached to reduce GitHub API usage and response time.
+- [x] SVG text is escaped to prevent markup injection.
 
 ## README integration
 

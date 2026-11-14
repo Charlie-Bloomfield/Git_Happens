@@ -3,6 +3,7 @@ import path from "node:path";
 
 const nextConfig: NextConfig = {
   agentRules: false,
+  outputFileTracingRoot: path.resolve(process.cwd(), ".."),
   turbopack: {
     root: path.resolve(process.cwd(), ".."),
   },
