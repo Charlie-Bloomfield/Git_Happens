@@ -31,7 +31,7 @@ const pad = (value: number) => value.toString().padStart(2, "0");
 
 export default function Home() {
   const [input, setInput] = useState("");
-  const [repository, setRepository] = useState("octocat/Hello-World");
+  const [repository, setRepository] = useState("Charlie-Bloomfield/Git_Happens");
   const [origin, setOrigin] = useState("https://YOUR-DOMAIN");
   const [formError, setFormError] = useState("");
   const [copied, setCopied] = useState(false);
