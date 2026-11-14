@@ -1,26 +1,25 @@
 # Frontend status
 
-## What is implemented
+## Implemented
 
-- A Next.js 16 app with a responsive landing page and repository input.
-- Input normalization for `owner/repo` and HTTPS `github.com/owner/repo` URLs.
-- A mock `RepositoryAnalysis` fixture for UI development.
-- An SVG leaderboard renderer that sorts by blame score, displays up to five contributors, and escapes text for XML.
-- `GET /api/blame.svg?repo=owner/repo`, which validates the repository and returns an SVG or a 400 response.
-- A leaderboard preview, sample summary numbers, and a copyable README image snippet.
-- Visible **DEMO DATA** labels in the page and SVG so sample results are never presented as real analysis.
+- A responsive Next.js landing page with GitHub repository input, a clearly labelled initial demo, live loading and error states, and an automatic scroll to the verdict after submission.
+- `GET /api/analysis?repo=owner/repo`, which calls the backend analyser and returns real `RepositoryAnalysis` JSON.
+- `GET /api/blame.svg?repo=owner/repo`, which renders up to five ranked contributors from the same analyser for the on-page preview and README image. `demo=1` is reserved for the initial sample preview.
+- Validation for `owner/repo` and HTTPS GitHub URLs, plus mapped errors for missing, private, empty, and rate-limited repositories.
+- An in-memory, per-instance analysis cache with a 15-minute TTL and request deduplication, plus short HTTP caching for SVG responses.
+- A copyable README Markdown embed after a successful live analysis. The SVG renderer XML-escapes text from GitHub.
 
-## Current limitations
+## Verified
 
-The endpoint currently returns the same sample contributors for every valid repository. No GitHub requests or real scoring run yet. The `Cache-Control` header caches the demo SVG response at the HTTP layer, but there is no cache for repository analysis. A snippet copied from localhost is only usable locally until the app is deployed to a public HTTPS domain.
+- `npm run build` passed from the repository root on 14 November 2026.
+- Frontend and backend type checks passed, and all 48 backend tests passed.
+- A live request for `Charlie-Bloomfield/Git_Happens` returned two contributors and eight commits; submitting the same repository in the browser displayed those numbers and a live SVG preview.
+- Invalid input returned JSON 400 and an SVG error card with HTTP 200, as intended for image embeds.
 
-Live analysis, achievement calculation, error states for GitHub failures, analysis caching, deployment, and an actual README embed test are still open items from the execution plan.
+## Remaining work
 
-## Verification already performed
+- Deploy to a public HTTPS domain and verify the image in a GitHub README. A localhost embed URL works only on the local machine.
+- The in-memory cache is local to each server instance and does not persist across restarts or deployments. For multiple instances, use a shared cache.
+- Anonymous GitHub requests are rate limited. Configure `GITHUB_TOKEN` on the server for a higher limit. The backend samples recent commits; see its integration guide for analysis limits.
 
-- `npm run build` completed successfully from `frontend/` after the folder move.
-- `npm run typecheck` passed from `frontend/` after the folder move.
-- In the browser, submitting a full GitHub URL updated the preview and snippet, and the copy button confirmed a successful copy.
-- The SVG route returned `200` with `image/svg+xml` for a valid repository and `400` for an invalid one.
-
-The commands should be rerun after changes to the analyser or route. See [Running and integration](./03-running-and-integration.md).
+See [Running and integration](./03-running-and-integration.md) for setup and route behavior.

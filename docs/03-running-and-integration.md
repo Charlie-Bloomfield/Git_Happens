@@ -5,27 +5,34 @@
 From the repository root:
 
 ```sh
-cd frontend
 npm ci
 npm run dev
 ```
 
-Open `http://localhost:3000`. Use `owner/repo` or an HTTPS GitHub repository URL. `npm run build` checks the production build and `npm run typecheck` checks TypeScript.
+Open `http://localhost:3000` and submit `owner/repo` or an HTTPS GitHub repository URL. A server-side `GITHUB_TOKEN` is optional but raises the GitHub API rate limit. Never put the token in a `NEXT_PUBLIC_` variable.
 
-## API behavior today
+Verification commands:
 
-```text
-GET /api/blame.svg?repo=octocat/Hello-World
+```sh
+npm run build
+npm run typecheck
+npm run test:backend
 ```
 
-Valid input returns an SVG with `Content-Type: image/svg+xml` and an `X-Git-Happens-Data: demo` header. Missing or malformed input returns `400` as plain text. The image contains a **DEMO DATA** badge. It is not a real GitHub analysis.
+## API
 
-## Connect Charlie's analyser
+- `GET /api/analysis?repo=owner/repo` returns real analysis as JSON. Invalid input returns 400; missing or private repositories return 404; empty repositories return 409; GitHub rate limits return 429; upstream failures return 502.
+- `GET /api/blame.svg?repo=owner/repo` returns a live `image/svg+xml` leaderboard. If analysis fails, it returns a readable SVG error card with HTTP 200 so README image proxies can display the message. The `X-Git-Happens-Error` header carries the error code.
+- `GET /api/blame.svg?repo=owner/repo&demo=1` returns the labelled sample card used only before a repository is submitted.
 
-1. Keep the public return type in `shared/analysis.ts` as the integration contract. Resolve any differences with Charlie's module there first.
-2. Add a server-only function that calls `analyseRepository(owner, repo)` and caches its `RepositoryAnalysis` result by normalized repository name for a short time.
-3. Replace the `mockAnalysis(repository)` call in `frontend/src/app/api/blame.svg/route.ts` with that function. Preserve validation, the SVG content type, and safe XML escaping. Remove the demo response header and demo badge for live results.
-4. Add a JSON analysis endpoint that calls the same function. Make the landing page fetch it for preview and summary; show loading, empty-repository, rate-limit, missing/private-repository, and generic-error states.
-5. Test one known public repository end to end, then deploy to a public HTTPS domain and paste the generated Markdown into a GitHub README. GitHub may cache the image, so a README refresh may lag behind fresh analysis.
+Successful analysis is cached in memory for 15 minutes per server instance. Concurrent requests for one repository share the same in-flight analysis. The SVG route also sends `Cache-Control` headers. These caches reduce GitHub requests but are not shared between deployed instances.
 
-Keep GitHub credentials on the server. Do not add a token to client components or a `NEXT_PUBLIC_` variable.
+## README embed and deployment
+
+After a successful analysis, copy the Markdown shown on the page. On localhost it looks like:
+
+```md
+![Git Happens leaderboard](http://localhost:3000/api/blame.svg?repo=OWNER%2FREPO)
+```
+
+Deploy the app from the repository root so both workspaces and the root lockfile are installed. Use the public HTTPS origin in the embed, then check the image in a GitHub README. GitHub proxies and caches README images, so updates may appear after the server cache expires. For multi-instance deployment, replace the in-memory cache with a shared store. See the [backend integration guide](../backend/docs/integration-guide.md) for GitHub sampling and token details.
