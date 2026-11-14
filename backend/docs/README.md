@@ -9,7 +9,7 @@ landing page, cache) uses that object to render the card.
 ```bash
 cd backend
 npm install
-npm test                                   # 48 unit/integration tests, no network
+npm test                                   # 49 unit/integration tests, no network
 npm run typecheck
 npm run analyse -- octocat/Spoon-Knife     # live analysis of a public repo
 ```

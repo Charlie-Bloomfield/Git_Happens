@@ -12,6 +12,14 @@ npm run dev
 
 Open `http://localhost:3000`. Use `owner/repo` or an HTTPS GitHub repository URL. `npm run build` checks the production build and `npm run typecheck` checks TypeScript.
 
+Backend tests run separately:
+
+```sh
+cd backend
+npm test            # 49 tests, no network needed
+npm run typecheck
+```
+
 Optional: put `GITHUB_TOKEN=...` in `frontend/.env.local` (server-side only) to raise GitHub's rate limit from 60 to 5,000 requests/hour and analyse line stats for more commits. Never use a `NEXT_PUBLIC_` variable for it.
 
 ## API
@@ -38,9 +46,9 @@ README-embeddable chart cards rendered by `frontend/src/lib/charts-svg.ts`. The 
 | `shame-mix` | Donut of the repo's total shame points by signal. |
 | `commit-share` | Donut of commits per contributor (top 5 + others). |
 | `heatmap` | Weekday × hour commit heatmap, with the late-night zone and Friday evening outlined. |
-| `awards` | How many suspects hold each achievement. |
+| `awards` | How many suspects hold each achievement. Not shown on the page any more, but still served so existing embeds keep working. |
 
-To match the reader's GitHub theme, use `<picture>` (the site's "Auto" option copies this):
+Each chart card on the evidence board shows its snippet next to an **Embed** button. To match the reader's GitHub theme, use `<picture>` (the site's "Auto" option copies this; "Dark" and "Light" copy plain Markdown):
 
 ```html
 <picture>
@@ -73,19 +81,14 @@ The frontend imports the analyser from `../backend` (alias `@backend/*`) and the
 - Install Command: `npm run install:all`
 - Environment variable: `GITHUB_TOKEN` (recommended)
 
-## Remaining integration work
-
-1. ~~Shared contract~~ Done: `shared/analysis.ts` is the single contract.
-2. ~~Live SVG route + cache~~ Done.
-3. ~~JSON endpoint~~ Done: `/api/analysis`.
-4. ~~Landing page on live data with loading/error states~~ Done, plus the rap sheet with evidence links and `?repo=` share links.
-5. ~~Deploy and test the README embed~~ Done: live at https://git-happens-peach.vercel.app, and the embed works on github.com.
-
 ## Production
 
 - URL: https://git-happens-peach.vercel.app
-- README embed: `![Git Exposed](https://git-happens-peach.vercel.app/api/blame.svg?repo=OWNER/REPO)`
+- README embed: `![Git Exposed leaderboard](https://git-happens-peach.vercel.app/api/blame.svg?repo=OWNER/REPO)`
 - Vercel project `git-happens`: root directory `frontend`, install command `npm run install:all`, `GITHUB_TOKEN` set for Production.
-- Redeploy from the repo root with `npx vercel deploy --prod`. The project isn't connected to GitHub yet, so pushes don't deploy
-  automatically; install the Vercel GitHub app on the repo and run `vercel git connect` to enable that.
+- The project is connected to GitHub. Every pull request gets a preview deployment, and merging into `main`
+  deploys to production automatically.
+- After a deploy, browsers can keep showing the old page or favicon. Hard-refresh with Cmd+Shift+R.
 - `.vercelignore` keeps `node_modules`, build output and `.env*` out of CLI uploads.
+- The Vercel project name and URL still say `git-happens`. Renaming them would break READMEs that already
+  embed the old URL.

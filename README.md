@@ -1,153 +1,141 @@
-# Git Exposed — 10-Hour Hackathon Execution Plan
+<div align="center">
 
-## Frontend status
+<img src="frontend/src/app/icon.svg" alt="Git Exposed logo" width="96" height="96">
 
-The Next.js app is in `frontend/`, Charlie's analyser is in `backend/`, and both use the contract in `shared/`. The landing page starts with a labelled demo preview and fetches real GitHub analysis after you submit a public repository.
+# Git Exposed
+
+**Your commits. Our judgement.**
+
+A roast engine for your Git history. Hand over a public GitHub repo and Git Exposed ranks its contributors by
+their worst commit habits, hands out achievements nobody wants, and gives you a card to put in your README.
+
+**[Try it live →](https://git-happens-peach.vercel.app)**
+
+</div>
+
+---
+
+Built for a hackathon with the theme **Hate the User**: you paste in your own repo, and the site turns on you.
+
+<p align="center">
+  <img src="https://git-happens-peach.vercel.app/api/blame.svg?repo=Charlie-Bloomfield/Git_Happens" alt="Git Exposed leaderboard for this repository" width="640">
+</p>
+
+## Features
+
+- **Hall of shame:** a live leaderboard of every contributor, ranked by blame score.
+- **Achievements:** eleven tags, from *Most Wanted* ("Congratulations, you're the problem.") to *Suspiciously Clean*
+  ("Nobody is this clean."). Hover a tag for its rule; click it to see who's charged.
+- **Rap sheet:** each suspect's stats with links to the exact commits behind them.
+- **The maths, shown:** a worked example breaks down anyone's score step by step.
+- **Evidence board:** four charts (score breakdown, anatomy of shame, commit share, crime-time heatmap).
+- **README embeds:** the leaderboard and every chart are live SVGs you can paste into any README, in dark, light or
+  auto-matching themes.
+- **Shareable links:** `/?repo=owner/repo` opens straight to a verdict.
+
+## How it works
+
+```text
+owner/repo ─→ GitHub REST API ─→ commit metadata (latest 300 commits, default branch)
+               (Octokit)          │
+                                  ├─ skip merges and bots, group commits by person
+                                  ├─ detect signals per commit
+                                  ├─ blame score + achievements
+                                  └─ cached analysis ─→ landing page, leaderboard SVG, chart SVGs
+```
+
+No code is downloaded or run. Git Exposed only reads public commit metadata.
+
+### The blame score
+
+Four signals carry weight:
+
+| Signal | Rule | Weight |
+| --- | --- | --- |
+| Revert | Undoes another commit | ×3 |
+| Large commit | 500+ lines or 25+ files | ×2 |
+| Late night | Committed 00:00–05:00 UTC | ×1 |
+| Suspicious message | `fix`, `wip`, `asdf`… or under 4 characters | ×1 |
+
+```text
+shamePoints = 3·reverts + 2·large + 1·lateNight + 1·suspicious
+blameScore  = min(100, round(100 · shamePoints / (2 · (commits + 5))))
+```
+
+Dividing by commits means doing lots of work isn't punished, and the `+ 5` stops one bad commit from topping the
+board. Full rules and achievement criteria: [backend/docs/scoring.md](backend/docs/scoring.md).
+
+## Put it in your README
+
+```md
+![Git Exposed leaderboard](https://git-happens-peach.vercel.app/api/blame.svg?repo=OWNER/REPO)
+```
+
+Charts work the same way: `/api/charts/<chart>.svg?repo=OWNER/REPO`, where `<chart>` is `score-breakdown`,
+`shame-mix`, `commit-share` or `heatmap`. Add `&theme=light` for GitHub's light mode, or copy the auto-theme
+`<picture>` snippet from the site's **Embed** buttons. GitHub caches README images, so updates can take a while to
+show up.
+
+## API
+
+| Endpoint | Returns |
+| --- | --- |
+| `GET /api/blame.svg?repo=owner/repo` | Leaderboard SVG (top 5). Errors come back as an SVG error card with status 200, so READMEs never show a broken image. |
+| `GET /api/charts/<chart>.svg?repo=owner/repo[&theme=light]` | Chart SVG. |
+| `GET /api/analysis?repo=owner/repo` | Full JSON analysis with evidence links. Errors are `{ error: { code, message } }` with 400/404/422/429/502. |
+
+Results are cached in memory for an hour per repo. Details: [docs/03-running-and-integration.md](docs/03-running-and-integration.md).
+
+## Run it locally
+
+Requires Node.js 20.9 or later (the minimum for Next.js 16).
 
 ```sh
 cd frontend
-npm run install:all
-npm run dev
+npm run install:all   # installs frontend/ and backend/ dependencies
+npm run dev           # http://localhost:3000
 ```
 
-Open `http://localhost:3000`. Enter `owner/repo` or an HTTPS GitHub repository URL to see the live leaderboard and copy its README Markdown. The copied localhost URL works locally; deploy the app to a public HTTPS domain before embedding it in a public README. Set a server-side `GITHUB_TOKEN` for a higher GitHub API limit.
+Optional but recommended: put `GITHUB_TOKEN=...` in `frontend/.env.local`. Without it, GitHub allows 60 requests an
+hour (about 4 analyses); with it, 5,000. A fine-grained token with no permissions is enough. Never expose it as a
+`NEXT_PUBLIC_` variable.
 
-Documentation:
+| Command | Where | Does |
+| --- | --- | --- |
+| `npm run build` | `frontend/` | Production build |
+| `npm run typecheck` | `frontend/` or `backend/` | TypeScript check |
+| `npm test` | `backend/` | 49 analyser tests, no network needed |
+| `npm run analyse -- owner/repo` | `backend/` | Analyse a repo from the command line |
 
-- [Frontend status](docs/01-frontend-status.md) — completed work and limitations.
-- [Frontend architecture](docs/02-frontend-architecture.md) — layout, data flow, and shared contract.
-- [Running and integration](docs/03-running-and-integration.md) — commands, API behavior, and deployment notes.
+## Project structure
 
-Current status: live GitHub fetching, scoring, the JSON and SVG routes, in-memory analysis caching, loading and error states, and the copy interaction work locally. Public deployment and a README embed test remain.
-
-**Team:** You and Charlie  
-**Theme:** Hate the User  
-**Goal:** Deploy a service that analyses a public GitHub repository, ranks contributors by questionable coding habits, awards humorous achievements, and generates an SVG leaderboard embeddable in a GitHub README.
-
-## Team responsibilities
-
-| You | Charlie |
-|---|---|
-| Next.js frontend and repository input | GitHub REST API integration using Octokit |
-| SVG leaderboard renderer | Commit and contributor analysis |
-| README Markdown snippet generator | Blame scoring and achievements |
-| Public API endpoint, caching and deployment | Revert detection and data validation |
-| Integration testing and demo | Analysis tests and technical explanation |
-
-## 10-hour schedule
-
-| Time | You | Charlie | Deliverable |
-|---|---|---|---|
-| **0–1h** | Create Next.js project, API route skeleton and shared types | Configure Octokit, token and analysis module | Repository and interface ready |
-| **1–2h** | Build SVG leaderboard using mock data | Fetch commits and map contributors | Independent modules working |
-| **2–3h** | Implement `/api/blame.svg?repo=owner/repo` | Calculate commit counts, late-night commits and large changes | First data-driven leaderboard |
-| **3–4h** | Build landing page, repository input and preview | Add scoring and three achievements | Usable local prototype |
-| **4–5h** | Integrate real analysis into endpoint and preview | Fix integration issues and test sample repos | **Working MVP** |
-| **5–6h** | Generate copyable README embed snippet | Add basic revert detection | README integration ready |
-| **6–7h** | Add caching, loading and error states | Improve scoring accuracy and handle missing authors | Stable application |
-| **7–8h** | Deploy HTTPS service; test in a real GitHub README | Validate live data and edge cases | **Public, embeddable card** |
-| **8–9h** | Polish UI and responsive design | Test results and improve achievements | Demo-ready build |
-| **9–10h** | Rehearse demo and prepare submission | Explain analysis logic and limitations | **Final submission** |
-
-## Shared contract — agree in hour 1
-
-Create `shared/analysis.ts`:
-
-```ts
-export interface DeveloperStats {
-  username: string;
-  commits: number;
-  reverts: number;
-  lateNightCommits: number;
-  largeCommits: number;
-  suspiciousMessages: number;
-  linesChanged: number;
-  blameScore: number;
-  achievements: string[];
-}
-
-export interface RepositoryAnalysis {
-  repository: string;
-  developers: DeveloperStats[];
-  analysedAt: string;
-}
+```text
+frontend/   Next.js 16 app: landing page, API routes, SVG renderers (deployed on Vercel)
+backend/    Commit analyser: GitHub fetching, identity, signals, scoring, achievements
+shared/     Data contract used by both sides
+docs/       Project documentation
 ```
 
-Charlie provides:
+**Stack:** Next.js 16, React 19, TypeScript, Tailwind CSS v4, shadcn/ui, Motion for React, Octokit, Vitest, Vercel.
 
-```ts
-async function analyseRepository(
-  owner: string,
-  repo: string
-): Promise<RepositoryAnalysis>;
-```
+## Limitations
 
-You provide:
+- Public repositories only. Private repos show as "not found".
+- Reads the latest 300 commits on the default branch. Large-commit detection covers the newest 100 (10 without a token).
+- Times are in UTC, because GitHub's API doesn't give the author's own time zone.
+- The scores are a joke. They measure commit habits, not how good anyone is at their job.
 
-```ts
-function generateLeaderboardSVG(
-  analysis: RepositoryAnalysis
-): string;
-```
+## Documentation
 
-The live integration now uses `analyseRepository(owner, repo)`. The mock fixture remains only for the initial labelled preview.
+| Doc | Covers |
+| --- | --- |
+| [Project status](docs/01-frontend-status.md) | What's built, known limitations, how it was verified |
+| [Architecture](docs/02-frontend-architecture.md) | Repository layout, data flow, keeping secrets server-side |
+| [Running and integration](docs/03-running-and-integration.md) | Commands, API behaviour, caching, deployment |
+| [Page guide and tone](docs/04-page-guide-and-tone.md) | Page walkthrough, demo script, how to write roast copy |
+| [Hackathon plan](docs/05-hackathon-plan.md) | The original 10-hour plan (historical) |
+| [Backend docs](backend/docs/README.md) | Analyser API, data contract, scoring, GitHub fetching, testing |
 
-## MVP acceptance criteria — by hour 5
+## Team
 
-- [x] User can enter a public GitHub repository URL or `owner/repo`.
-- [x] Server fetches recent commit history from GitHub.
-- [x] Analysis returns per-developer statistics and a reproducible score.
-- [x] At least three achievements are calculated from real data.
-- [x] SVG endpoint returns valid `image/svg+xml`.
-- [x] Landing page displays the generated leaderboard.
-- [x] README Markdown snippet can be copied.
-
-## Deployment acceptance criteria — by hour 8
-
-- [ ] Public HTTPS endpoint works without signing in for public repositories.
-- [ ] Embedding the image in a GitHub README renders correctly.
-- [ ] GitHub token is server-side only.
-- [x] Input validation and error responses handle nonexistent/private repositories.
-- [x] Results are cached to reduce GitHub API usage and response time.
-- [x] SVG text is escaped to prevent markup injection.
-
-## README integration
-
-```md
-![Git Exposed Leaderboard](https://YOUR-DOMAIN/api/blame.svg?repo=OWNER/REPO)
-```
-
-GitHub may cache proxied README images, so changes might not appear immediately. Avoid performing a full repository scan on every image request.
-
-## Scoring and achievements
-
-Start with objective, low-cost signals:
-
-| Signal | Example achievement | Caveat |
-|---|---|---|
-| Commit count | Commit Goblin | Volume is not a measure of quality |
-| Commits at unusual hours | Midnight Menace | Use UTC consistently or disclose timezone |
-| Very large commits | Code Arsonist | Large commits can be legitimate |
-| Revert messages | Revert Royalty | Message detection is only an approximation |
-
-Make the leaderboard playful, not a claim about developer competence. Display the evidence or commit links where practical.
-
-## Cut list if behind schedule
-
-1. **Cut first:** AI-generated roasts, animations, advanced dashboards.
-2. **Cut second:** Revert detection and code complexity scoring.
-3. **Keep:** Real commit analysis, leaderboard, SVG endpoint, README snippet and deployment.
-4. **Do not attempt in the MVP:** SZZ bug attribution or cloning and executing untrusted repositories.
-
-## Demo script — 2–3 minutes
-
-1. Explain the theme: **“Developers voluntarily install a card that publicly roasts their Git history.”**
-2. Paste a public GitHub repository into the website.
-3. Show real contributor rankings and achievements.
-4. Copy the generated Markdown into a README.
-5. Refresh the README to show the SVG card (allow for GitHub image caching).
-6. Explain how GitHub data becomes scores, then mention safeguards and future improvements.
-
-## Final checkpoint
-
-At **hour 5**, stop adding features until the end-to-end flow works. At **hour 8**, freeze major development and focus on reliability and presentation. The hackathon win condition is a **live, shareable GitHub README card**, not a perfect blame algorithm.
+Built by [Charlie-Bloomfield](https://github.com/Charlie-Bloomfield) and [Kyrylo234](https://github.com/Kyrylo234).

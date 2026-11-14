@@ -48,14 +48,12 @@ responses, which hides the friendly error card.
 
 ## Wiring it into the Next.js app
 
-The analyser lives outside `frontend/`, so the frontend needs:
-- `@octokit/rest` available at deploy time. Locally, backend files find it in `backend/node_modules`,
-  but a host that only runs `npm ci` inside `frontend/` won't install that folder. Either add
-  `@octokit/rest@21` to `frontend/package.json` or set up an npm workspace at the root.
-- Next.js may need to be told it can compile files outside `frontend/` (e.g. `outputFileTracingRoot`
-  set to the repo root in `next.config.ts`). Check this with `npm run build`.
-- Optionally a `@backend/*` → `../backend/src/*` path alias in `frontend/tsconfig.json`, like `@shared/*`.
-- `export const runtime = 'nodejs'` on routes that call it (Octokit and `process.env` need Node).
+The analyser lives outside `frontend/`. This is how the frontend is set up to use it:
+- **Dependencies:** `npm run install:all` (in `frontend/`) installs both `frontend/` and `backend/` packages, so
+  `@octokit/rest` resolves from `backend/node_modules`. Vercel uses the same command as its install step.
+- **Compiling outside `frontend/`:** `next.config.ts` sets `outputFileTracingRoot` and `turbopack.root` to the repo root.
+- **Path aliases:** `@backend/*` → `../backend/src/*` and `@shared/*` → `../shared/*` in `frontend/tsconfig.json`.
+- **Runtime:** every route that calls the analyser sets `export const runtime = 'nodejs'`.
 
 ## Rendering notes
 
