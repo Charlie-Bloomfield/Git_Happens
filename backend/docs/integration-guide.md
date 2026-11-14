@@ -3,7 +3,8 @@
 ## Calling the analyser from a route
 
 ```ts
-import { analyseRepository, parseRepositoryInput, isAnalysisError } from '<path>/backend/src/analysis';
+// From frontend/src/app/api/blame.svg/route.ts
+import { analyseRepository, parseRepositoryInput, isAnalysisError } from '../../../../../backend/src/analysis';
 
 export async function GET(request: Request) {
     const input = new URL(request.url).searchParams.get('repo') ?? '';
@@ -40,6 +41,17 @@ responses, which hides the friendly error card.
 - Suggested TTL: 1–6 hours. Use `analysedAt` to show freshness on the card.
 - De-duplicate requests already in flight for the same key, so a burst of README loads triggers only one analysis.
 - Analysis takes about 1–3 s with default settings (mostly the line-stats requests).
+
+## Wiring it into the Next.js app
+
+The analyser lives outside `frontend/`, so the frontend needs:
+- `@octokit/rest` available at deploy time. Locally, backend files find it in `backend/node_modules`,
+  but a host that only runs `npm ci` inside `frontend/` won't install that folder. Either add
+  `@octokit/rest@21` to `frontend/package.json` or set up an npm workspace at the root.
+- Next.js may need to be told it can compile files outside `frontend/` (e.g. `outputFileTracingRoot`
+  set to the repo root in `next.config.ts`). Check this with `npm run build`.
+- Optionally a `@backend/*` → `../backend/src/*` path alias in `frontend/tsconfig.json`, like `@shared/*`.
+- `export const runtime = 'nodejs'` on routes that call it (Octokit and `process.env` need Node).
 
 ## Rendering notes
 

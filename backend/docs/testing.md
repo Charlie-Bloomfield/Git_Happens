@@ -20,7 +20,7 @@ npm run typecheck   # tsc --noEmit
 
 | Developer | Setup | Expected |
 | --- | --- | --- |
-| bob | 7 commits: 2 reverts, 4 late-night, 2 large, 3 lazy, 2 Friday evenings; one commit has no login but bob's email | score **71**; Most Wanted, Ctrl+Z Enthusiast, Night Owl, The Big Bang, Commit Message Poet, Friday Deployer |
+| bob | 7 commits: 2 reverts, 4 late-night, 2 large, 3 suspicious, 2 Friday evenings; one commit has no login but bob's email | score **71**; Most Wanted, Ctrl+Z Enthusiast, Night Owl, The Big Bang, Commit Message Poet, Friday Deployer |
 | alice | 12 tidy weekday commits + 1 merge (skipped) | score 0; Carrying The Team, Suspiciously Clean |
 | Carol C | 1 commit, no GitHub account | One-Hit Wonder |
 | dependabot[bot] | 2 commits | skipped |

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isLargeCommit, isLazyMessage, isRevertCommit, localTime } from '../heuristics';
+import { isLargeCommit, isSuspiciousMessage, isRevertCommit, localTime } from '../heuristics';
 import { createIdentityResolver, isBotCommit } from '../identity';
 import { parseRepositoryInput } from '../repoInput';
 import { blameScore } from '../scoring';
@@ -28,8 +28,8 @@ describe('heuristics', () => {
         ['final final', true],
         ['Fix null check in parser', false],
         ['Update README with setup steps', false],
-    ])('isLazyMessage(%j) = %s', (message, expected) => {
-        expect(isLazyMessage(commit({ message, authoredAt: at }))).toBe(expected);
+    ])('isSuspiciousMessage(%j) = %s', (message, expected) => {
+        expect(isSuspiciousMessage(commit({ message, authoredAt: at }))).toBe(expected);
     });
 
     it('large commit detection is unknown without stats', () => {
@@ -66,12 +66,12 @@ describe('identity', () => {
 
 describe('scoring', () => {
     it('normalises by volume and caps at 100', () => {
-        expect(blameScore({ commits: 0, reverts: 0, largeCommits: 0, lateNightCommits: 0, lazyMessages: 0 })).toBe(0);
+        expect(blameScore({ commits: 0, reverts: 0, largeCommits: 0, lateNightCommits: 0, suspiciousMessages: 0 })).toBe(0);
         // one late-night commit is smoothed: 100·1 / (2·6) = 8.33 → 8
-        expect(blameScore({ commits: 1, reverts: 0, largeCommits: 0, lateNightCommits: 1, lazyMessages: 0 })).toBe(8);
-        expect(blameScore({ commits: 2, reverts: 5, largeCommits: 2, lateNightCommits: 2, lazyMessages: 2 })).toBe(100);
-        const few = blameScore({ commits: 10, reverts: 1, largeCommits: 0, lateNightCommits: 0, lazyMessages: 0 });
-        const many = blameScore({ commits: 100, reverts: 1, largeCommits: 0, lateNightCommits: 0, lazyMessages: 0 });
+        expect(blameScore({ commits: 1, reverts: 0, largeCommits: 0, lateNightCommits: 1, suspiciousMessages: 0 })).toBe(8);
+        expect(blameScore({ commits: 2, reverts: 5, largeCommits: 2, lateNightCommits: 2, suspiciousMessages: 2 })).toBe(100);
+        const few = blameScore({ commits: 10, reverts: 1, largeCommits: 0, lateNightCommits: 0, suspiciousMessages: 0 });
+        const many = blameScore({ commits: 100, reverts: 1, largeCommits: 0, lateNightCommits: 0, suspiciousMessages: 0 });
         expect(many).toBeLessThan(few);
     });
 });

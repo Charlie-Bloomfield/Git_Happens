@@ -24,7 +24,7 @@ const small = { additions: 12, deletions: 3, filesChanged: 2 };
 /**
  * acme/widgets — a tiny team with very predictable habits (all dates UTC, March 2026):
  *  - alice: 12 tidy weekday-daytime commits (+1 merge commit, which is ignored)
- *  - bob:   7 commits — 2 reverts, 4 late-night, 2 large, 3 lazy messages, 2 Friday evenings.
+ *  - bob:   7 commits — 2 reverts, 4 late-night, 2 large, 3 suspicious messages, 2 Friday evenings.
  *           One commit has no GitHub login but bob's email, so it must be mapped to bob.
  *  - carol: 1 commit, no GitHub account linked
  *  - dependabot[bot]: 2 commits, ignored as a bot

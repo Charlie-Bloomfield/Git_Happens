@@ -23,7 +23,6 @@ backend/
 ├── docs/                    ← you are here
 ├── scripts/analyse.ts       CLI wrapper around the analyser
 ├── src/
-│   ├── types/analysis.ts    Shared data contract (frontend ⇄ backend)
 │   └── analysis/
 │       ├── index.ts         Public API: analyseRepository() and re-exports
 │       ├── github.ts        Octokit client, pagination, line stats, error mapping
@@ -37,6 +36,8 @@ backend/
 │       └── __tests__/       Tests and fixtures
 ├── package.json
 └── tsconfig.json
+
+shared/analysis.ts           Shared data contract (frontend ⇄ backend), at the repo root
 ```
 
 ## Documents

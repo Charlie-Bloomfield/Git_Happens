@@ -18,7 +18,7 @@ export const THRESHOLDS = {
 
 const REVERT_PATTERN = /^revert\b|\brevert(?:s|ed|ing)?\s+(?:"|commit\b|[0-9a-f]{7,40}\b)|this reverts commit [0-9a-f]{7,40}/i;
 
-const LAZY_MESSAGE_PATTERN =
+const SUSPICIOUS_MESSAGE_PATTERN =
     /^(?:wip|fix(?:es|ed)?|bug ?fix|update[sd]?|changes?|stuff|things|test(?:ing)?|tmp|temp|minor|misc|oops+|cleanup|done|commit|final|final final|idk|lol|ugh|whatever|please work|pls work|works now|it works|(?:asdf)+|(?:qwerty)+|[a-z]|\.+|-+|\?+|!+|[0-9]+)[.!?\s]*$/i;
 
 export function firstLine(message: string): string {
@@ -33,9 +33,9 @@ export function isRevertCommit(commit: CommitRecord): boolean {
     return REVERT_PATTERN.test(commit.message);
 }
 
-export function isLazyMessage(commit: CommitRecord): boolean {
+export function isSuspiciousMessage(commit: CommitRecord): boolean {
     const subject = firstLine(commit.message);
-    return subject.length < 4 || LAZY_MESSAGE_PATTERN.test(subject);
+    return subject.length < 4 || SUSPICIOUS_MESSAGE_PATTERN.test(subject);
 }
 
 /** Returns null when line stats were not fetched for this commit. */

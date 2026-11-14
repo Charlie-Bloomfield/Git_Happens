@@ -82,7 +82,6 @@ describe('analyseRepository', () => {
         const result = await analyseRepository('acme', 'widgets', { octokit, now: new Date('2026-11-14T00:00:00Z') });
         expect(result).toEqual({
             repository: 'Acme/Widgets',
-            analysedAt: '2026-11-14T00:00:00.000Z',
             developers: [
                 {
                     username: 'dev',
@@ -90,10 +89,13 @@ describe('analyseRepository', () => {
                     reverts: 0,
                     lateNightCommits: 0,
                     largeCommits: 0,
+                    suspiciousMessages: 0,
+                    linesChanged: 4, // 2 commits × (1 addition + 1 deletion) from the fake getCommit
                     blameScore: 0,
                     achievements: ['Innocent (For Now)'],
                 },
             ],
+            analysedAt: '2026-11-14T00:00:00.000Z',
         });
     });
 

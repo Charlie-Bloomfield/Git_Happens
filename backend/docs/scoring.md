@@ -26,14 +26,14 @@ under the author's git name.
 | Revert | Message starts with `Revert`, contains `This reverts commit <sha>`, or `revert(ed) <sha>` / `revert "…"`. |
 | Late night | Authored 00:00–04:59 in the analysis time zone (**UTC by default** — GitHub's REST API doesn't expose the author's own offset). |
 | Large commit | ≥ 500 changed lines (additions + deletions) or ≥ 25 files. |
-| Lazy message | First line under 4 chars, or just `fix`, `wip`, `update`, `stuff`, `asdf`, `final final`, `please work`, `...` and friends. |
+| Suspicious message | First line under 4 chars, or just `fix`, `wip`, `update`, `stuff`, `asdf`, `final final`, `please work`, `...` and friends. |
 | Weekend | Saturday or Sunday (analysis time zone). |
 | Friday evening | Friday, 16:00 or later (analysis time zone). |
 
 ## Blame score (0–100)
 
 ```
-shamePoints = 3·reverts + 2·largeCommits + 1·lateNightCommits + 1·lazyMessages
+shamePoints = 3·reverts + 2·largeCommits + 1·lateNightCommits + 1·suspiciousMessages
 blameScore  = min(100, round(100 · shamePoints / (2 · (commits + 5))))
 ```
 
@@ -51,7 +51,7 @@ Listed in this order on each developer; anyone with none gets **Innocent (For No
 | Ctrl+Z Enthusiast | ≥ 2 reverts. |
 | Night Owl | ≥ 3 late-night commits and ≥ 20% of their commits. |
 | The Big Bang | ≥ 2 large commits. |
-| Commit Message Poet | ≥ 3 lazy messages and ≥ 25% of their commits. |
+| Commit Message Poet | ≥ 3 suspicious messages and ≥ 25% of their commits. |
 | Weekend Warrior | ≥ 5 commits, ≥ 40% on weekends. |
 | Friday Deployer | ≥ 2 Friday-evening commits. |
 | Carrying The Team | Most commits in the repo (at least 2 developers). |

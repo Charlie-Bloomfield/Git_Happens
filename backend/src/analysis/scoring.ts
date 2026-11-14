@@ -1,7 +1,7 @@
 /**
  * Blame score — entertainment only.
  *
- *   shamePoints = 3·reverts + 2·largeCommits + 1·lateNightCommits + 1·lazyMessages
+ *   shamePoints = 3·reverts + 2·largeCommits + 1·lateNightCommits + 1·suspiciousMessages
  *   blameScore  = min(100, round(100 · shamePoints / (2 · (commits + PRIOR_COMMITS))))
  *
  * Dividing by commit count normalises for contribution volume, so prolific developers
@@ -13,7 +13,7 @@ export const SCORE_WEIGHTS = {
     revert: 3,
     largeCommit: 2,
     lateNightCommit: 1,
-    lazyMessage: 1,
+    suspiciousMessage: 1,
 } as const;
 
 export const PRIOR_COMMITS = 5;
@@ -24,7 +24,7 @@ export interface ScoreInputs {
     reverts: number;
     largeCommits: number;
     lateNightCommits: number;
-    lazyMessages: number;
+    suspiciousMessages: number;
 }
 
 export function shamePoints(s: ScoreInputs): number {
@@ -32,7 +32,7 @@ export function shamePoints(s: ScoreInputs): number {
         SCORE_WEIGHTS.revert * s.reverts +
         SCORE_WEIGHTS.largeCommit * s.largeCommits +
         SCORE_WEIGHTS.lateNightCommit * s.lateNightCommits +
-        SCORE_WEIGHTS.lazyMessage * s.lazyMessages
+        SCORE_WEIGHTS.suspiciousMessage * s.suspiciousMessages
     );
 }
 

@@ -30,6 +30,6 @@ The page and SVG route use the same fixture format but currently invoke it separ
 
 ## Shared contract
 
-`shared/analysis.ts` defines `DeveloperStats` and `RepositoryAnalysis`. It follows the 10-hour execution plan: username, commit and revert counts, late-night and suspicious-message counts, lines changed, blame score, achievements, repository name, and analysis timestamp. Charlie's `analyseRepository(owner, repo)` should return `Promise<RepositoryAnalysis>`.
+`shared/analysis.ts` defines `DeveloperStats` and `RepositoryAnalysis`. It follows the 10-hour execution plan: username, commit and revert counts, late-night, large-commit and suspicious-message counts, lines changed, blame score, achievements, repository name, and analysis timestamp. Charlie's `analyseRepository(owner, repo)` should return `Promise<RepositoryAnalysis>`.
 
 The SVG renderer accepts a `RepositoryAnalysis` object and returns an SVG string. It must continue to XML-escape any text from GitHub before interpolation. The current demo badge is hardcoded into the renderer and must be removed or made conditional when live data is connected.

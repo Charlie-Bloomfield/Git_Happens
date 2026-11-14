@@ -12,6 +12,8 @@ describe('computeAnalysis (acme/widgets fixture)', () => {
         expect(result.developers.map((d) => d.username)).toEqual(['bob', 'alice', 'Carol C']);
         expect(byName.bob!.commits).toBe(7);
         expect(byName.alice!.commits).toBe(12);
+        expect(byName.alice!.linesChanged).toBe(180);
+        expect(byName['Carol C']!.linesChanged).toBe(0); // no line stats fetched
         expect(result.meta).toMatchObject({ mergeCommitsSkipped: 1, botCommitsSkipped: 2, commitsAnalysed: 20 });
     });
 
@@ -20,8 +22,9 @@ describe('computeAnalysis (acme/widgets fixture)', () => {
             reverts: 2,
             lateNightCommits: 4,
             largeCommits: 2,
-            lazyMessages: 3,
+            suspiciousMessages: 3,
             fridayEveningCommits: 2,
+            linesChanged: 960, // 6 commits with stats: 15·4 + 820 + 80; the login-less one has none
             shamePoints: 17,
             blameScore: 71,
         });
@@ -71,7 +74,17 @@ describe('toRepositoryAnalysis', () => {
         expect(Object.keys(contract).sort()).toEqual(['analysedAt', 'developers', 'repository']);
         expect(contract.analysedAt).toBe('2026-11-14T12:00:00.000Z');
         expect(Object.keys(contract.developers[0]!).sort()).toEqual(
-            ['achievements', 'blameScore', 'commits', 'largeCommits', 'lateNightCommits', 'reverts', 'username'].sort(),
+            [
+                'achievements',
+                'blameScore',
+                'commits',
+                'largeCommits',
+                'lateNightCommits',
+                'linesChanged',
+                'reverts',
+                'suspiciousMessages',
+                'username',
+            ].sort(),
         );
         expect(() => JSON.parse(JSON.stringify(contract))).not.toThrow();
     });

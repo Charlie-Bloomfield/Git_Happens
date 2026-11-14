@@ -38,7 +38,7 @@ export const ACHIEVEMENT_RULES: readonly AchievementRule[] = [
     {
         title: 'Commit Message Poet',
         criteria: 'At least 3 commits with messages like "fix", "wip" or "asdf", making up at least 25% of their commits.',
-        test: (d) => d.lazyMessages >= 3 && d.lazyMessages / d.commits >= 0.25,
+        test: (d) => d.suspiciousMessages >= 3 && d.suspiciousMessages / d.commits >= 0.25,
     },
     {
         title: 'Weekend Warrior',

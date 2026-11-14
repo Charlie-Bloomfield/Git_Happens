@@ -1,5 +1,5 @@
 import type { Octokit } from '@octokit/rest';
-import type { RepositoryAnalysis } from '../types/analysis';
+import type { RepositoryAnalysis } from '../../../shared/analysis';
 import { computeAnalysis, toRepositoryAnalysis, type DetailedRepositoryAnalysis } from './computeAnalysis';
 import { createOctokit, fetchCommitHistory } from './github';
 import { isValidRepositoryRef } from './repoInput';

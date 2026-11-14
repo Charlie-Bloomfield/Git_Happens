@@ -1,10 +1,10 @@
-import type { DeveloperStats, RepositoryAnalysis } from '../types/analysis';
+import type { DeveloperStats, RepositoryAnalysis } from '../../../shared/analysis';
 import { awardAchievements } from './achievements';
 import {
     isFridayEvening,
     isLargeCommit,
     isLateNight,
-    isLazyMessage,
+    isSuspiciousMessage,
     isMergeCommit,
     isRevertCommit,
     isWeekend,
@@ -18,12 +18,11 @@ export interface Evidence {
     reverts: string[];
     lateNight: string[];
     large: string[];
-    lazyMessages: string[];
+    suspiciousMessages: string[];
 }
 
 /** Superset of the shared DeveloperStats with the extra detail the dashboard can use. */
 export interface DeveloperProfile extends DeveloperStats {
-    lazyMessages: number;
     weekendCommits: number;
     fridayEveningCommits: number;
     /** Commits for which line stats were available (large-commit detection coverage). */
@@ -101,6 +100,7 @@ export function computeAnalysis(
         if (large !== null) {
             dev.commitsWithLineStats++;
             commitsWithLineStats++;
+            dev.linesChanged += (commit.additions ?? 0) + (commit.deletions ?? 0);
         }
         if (isRevertCommit(commit)) {
             dev.reverts++;
@@ -114,9 +114,9 @@ export function computeAnalysis(
             dev.largeCommits++;
             add(dev.evidence.large);
         }
-        if (isLazyMessage(commit)) {
-            dev.lazyMessages++;
-            add(dev.evidence.lazyMessages);
+        if (isSuspiciousMessage(commit)) {
+            dev.suspiciousMessages++;
+            add(dev.evidence.suspiciousMessages);
         }
         if (isWeekend(time)) dev.weekendCommits++;
         if (isFridayEvening(time)) dev.fridayEveningCommits++;
@@ -161,16 +161,18 @@ export function computeAnalysis(
 export function toRepositoryAnalysis(detailed: DetailedRepositoryAnalysis): RepositoryAnalysis {
     return {
         repository: detailed.repository,
-        analysedAt: detailed.analysedAt,
         developers: detailed.developers.map((d) => ({
             username: d.username,
             commits: d.commits,
             reverts: d.reverts,
             lateNightCommits: d.lateNightCommits,
             largeCommits: d.largeCommits,
+            suspiciousMessages: d.suspiciousMessages,
+            linesChanged: d.linesChanged,
             blameScore: d.blameScore,
             achievements: [...d.achievements],
         })),
+        analysedAt: detailed.analysedAt,
     };
 }
 
@@ -181,13 +183,14 @@ function emptyProfile(username: string): DeveloperProfile {
         reverts: 0,
         lateNightCommits: 0,
         largeCommits: 0,
+        suspiciousMessages: 0,
+        linesChanged: 0,
         blameScore: 0,
         achievements: [],
-        lazyMessages: 0,
         weekendCommits: 0,
         fridayEveningCommits: 0,
         commitsWithLineStats: 0,
         shamePoints: 0,
-        evidence: { reverts: [], lateNight: [], large: [], lazyMessages: [] },
+        evidence: { reverts: [], lateNight: [], large: [], suspiciousMessages: [] },
     };
 }
