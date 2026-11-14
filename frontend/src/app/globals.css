@@ -43,19 +43,15 @@ main { overflow: hidden; background: radial-gradient(circle at 82% 5%, #171f29 0
 .brand-image { display: block; width: auto; height: 56px; object-fit: contain; }
 .brand-name { white-space: nowrap; color: #e6edf3; }
 .brand-name span { color: #58a6ff; }
-.header-right { display: flex; align-items: center; gap: 32px; }
-.header-meta { color: #717881; font: 10px "DM Mono", monospace; letter-spacing: 1.8px; }
 .header-link { display: inline-flex; align-items: center; gap: 8px; color: #c4cbd3; font-size: 13px; font-weight: 600; transition: color .2s; }
 .header-link:hover, .header-link svg:last-child { color: #58a6ff; }
 
 .hero { position: relative; isolation: isolate; min-height: 645px; display: grid; grid-template-columns: minmax(0, 1.13fr) minmax(340px, .87fr); align-items: center; gap: 65px; padding-block: 92px 100px; }
 .hero-spotlight { position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
 .hero-copy { position: relative; z-index: 1; }
-.eyebrow-badge { height: 29px; padding: 0 12px; border-color: #354960; background: #16202b; color: #58a6ff; font: 500 10px "DM Mono", monospace; letter-spacing: 1.3px; }
-.live-dot, .status-dot { width: 7px; height: 7px; flex: none; border-radius: 50%; background: currentColor; box-shadow: 0 0 12px currentColor; }
-.hero h1 { font-size: clamp(58px, 6vw, 91px); line-height: 1.02; letter-spacing: -6.5px; font-weight: 700; margin: 28px 0 24px; }
+.status-dot { width: 7px; height: 7px; flex: none; border-radius: 50%; background: currentColor; box-shadow: 0 0 12px currentColor; }
+.hero h1 { font-size: clamp(48px, 5vw, 74px); line-height: 1.05; letter-spacing: -5px; font-weight: 700; margin: 0 0 24px; }
 .hero h1 em { font-style: normal; color: #58a6ff; }
-.hero-description { max-width: 590px; margin: 0 0 37px; color: #9fa6ae; font-size: 17px; line-height: 1.75; }
 .query-card { max-width: 678px; padding: 19px 20px 16px; gap: 0; background: #161b22; border: 1px solid #39434e; border-radius: 13px; box-shadow: 0 20px 80px #0005, inset 0 1px #ffffff0d; }
 .repo-form label { display: block; margin-bottom: 12px; color: #aeb7c1; font: 500 10px "DM Mono", monospace; letter-spacing: 1.8px; }
 .query-row { display: flex; align-items: center; gap: 8px; }
@@ -65,11 +61,9 @@ main { overflow: hidden; background: radial-gradient(circle at 82% 5%, #171f29 0
 .query-row [data-slot="input"]::placeholder { color: #636b75; }
 .judge-button[data-slot="button"] { flex: none; height: 48px; padding: 0 17px; border-radius: 8px; background: #58a6ff; color: #081525; font-size: 13px; font-weight: 700; box-shadow: 0 5px 20px #58a6ff24; }
 .judge-button[data-slot="button"]:hover { background: #79b8ff; }
-.judge-button svg { margin-left: 7px; }
+.judge-arrow { display: inline-flex; position: relative; top: 2px; margin-left: 7px; }
 .form-hint, .form-error { margin: 9px 0 0; font-size: 11px; }
 .form-hint { color: #707a85; } .form-hint span { color: #58a6ff; padding: 0 5px; } .form-error { color: #ff8d82; }
-.hero-note { display: flex; align-items: center; gap: 9px; color: #7f8995; font-size: 12px; margin-top: 21px; }
-.hero-note svg { flex: none; color: #ff786e; }
 
 .hero-visual { position: relative; height: 490px; display: flex; align-items: center; justify-content: center; }
 .visual-orbit { position: absolute; width: 95%; aspect-ratio: 1; border: 1px solid #35425127; border-radius: 50%; }
@@ -89,7 +83,6 @@ main { overflow: hidden; background: radial-gradient(circle at 82% 5%, #171f29 0
 .terminal-verdict span { display: flex; align-items: center; gap: 6px; color: #58a6ff; font-size: 10px; letter-spacing: 2px; }
 .terminal-verdict strong { color: #d7e5f6; font: 700 18px "Space Grotesk", sans-serif; letter-spacing: 1px; }
 .terminal-stamp { position: absolute; top: -26px; right: -18px; transform: rotate(11deg); padding: 8px 14px; border: 2px solid #f78166; border-radius: 4px; color: #f78166; font: 500 13px "DM Mono", monospace; letter-spacing: 2px; background: #161b22; }
-.visual-caption { position: absolute; bottom: 21px; color: #57626e; font: 10px "DM Mono", monospace; letter-spacing: 2px; }
 
 .process-strip { border-block: 1px solid #283039; background: #11161b; }
 .process-inner { display: flex; align-items: center; justify-content: center; gap: 55px; min-height: 63px; color: #99a3af; font: 500 10px "DM Mono", monospace; letter-spacing: 1.5px; }
@@ -218,10 +211,12 @@ main { overflow: hidden; background: radial-gradient(circle at 82% 5%, #171f29 0
 .explainer-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: 28px; align-items: start; }
 .formula-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 22px; }
 .formula-steps > li { display: flex; gap: 16px; }
+.formula-steps > li > div { min-width: 0; }
 .step-no { flex: none; width: 30px; height: 30px; display: grid; place-items: center; border: 1px solid #3b6aa1; border-radius: 50%; color: #58a6ff; font: 500 12px "DM Mono", monospace; }
 .formula-steps h3 { margin: 4px 0 4px; font-size: 17px; }
 .formula-steps p { margin: 0; color: #8d96a1; font-size: 13.5px; line-height: 1.65; }
-.formula-steps code, .worked-note code { white-space: nowrap; padding: 1px 5px; border-radius: 4px; background: #1b2430; color: #cfe2f7; font: 12px "DM Mono", monospace; }
+.formula-steps code, .worked-note code { padding: 1px 5px; border-radius: 4px; background: #1b2430; color: #cfe2f7; font: 12px "DM Mono", monospace; }
+.formula-steps code { overflow-wrap: anywhere; }
 .signal-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
 .signal-card { padding: 13px 14px; border: 1px solid #2c3640; border-left: 3px solid var(--c); border-radius: 8px; background: #12161b; }
 .signal-head { display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 700; }
@@ -268,13 +263,16 @@ main { overflow: hidden; background: radial-gradient(circle at 82% 5%, #171f29 0
 .chart-endpoint { display: block; margin-top: 10px; overflow: hidden; color: #5f6c7a; font: 10px "DM Mono", monospace; white-space: nowrap; text-overflow: ellipsis; }
 
 @media (max-width: 900px) {
-  .explainer-grid, .chart-grid { grid-template-columns: 1fr; }
+  .explainer-grid, .chart-grid { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 620px) {
   .signal-cards { grid-template-columns: 1fr; }
   .charge-detail { flex-direction: column; gap: 12px; padding: 18px; }
   .explainer, .evidence-board { padding-block: 64px 70px; }
   .explainer h2, .evidence-board h2 { font-size: 44px; }
+  .worked-top { flex-wrap: wrap; }
+  .suspect-select { min-width: 0; max-width: 100%; }
+  .suspect-select select { max-width: 100%; }
   .evidence-controls { justify-content: flex-start; }
 }
 
@@ -282,7 +280,7 @@ main { overflow: hidden; background: radial-gradient(circle at 82% 5%, #171f29 0
 @keyframes pulse { 50% { opacity: .3; } }
 @media (max-width: 1050px) {
   .hero { gap: 30px; grid-template-columns: minmax(0, 1fr) minmax(300px, .8fr); }
-  .hero h1 { font-size: clamp(53px, 6vw, 74px); letter-spacing: -5px; }
+  .hero h1 { font-size: clamp(45px, 5vw, 64px); letter-spacing: -4px; }
   .terminal-body { font-size: 10px; }
 }
 @media (max-width: 850px) {
@@ -296,14 +294,12 @@ main { overflow: hidden; background: radial-gradient(circle at 82% 5%, #171f29 0
 @media (max-width: 620px) {
   .shell { width: min(100% - 32px, 1230px); }
   .site-header { height: 68px; } .brand { font-size: 21px; } .brand-image { height: 44px; }
-  .header-meta, .header-link span { display: none; } .header-link { gap: 3px; }
+  .header-link span { display: none; } .header-link { gap: 3px; }
   .hero { padding-block: 68px 72px; }
-  .hero h1 { font-size: clamp(47px, 11vw, 62px); line-height: 1.04; letter-spacing: -4px; margin-top: 22px; }
-  .hero-description { font-size: 15px; margin-bottom: 28px; } .eyebrow-badge { font-size: 8px; letter-spacing: .9px; }
+  .hero h1 { font-size: clamp(36px, 10vw, 48px); line-height: 1.08; letter-spacing: -3px; }
   .query-card { padding: 16px; } .query-row { flex-wrap: wrap; }
   .query-row [data-slot="input"] { min-width: calc(100% - 33px); }
   .judge-button[data-slot="button"] { width: 100%; margin-top: 4px; }
-  .hero-note { align-items: flex-start; line-height: 1.5; }
   .process-inner { justify-content: space-between; gap: 5px; min-height: 58px; font-size: 8px; letter-spacing: .4px; }
   .process-inner span { gap: 4px; } .process-inner svg { width: 11px; }
   .results { padding-block: 68px 72px; }
