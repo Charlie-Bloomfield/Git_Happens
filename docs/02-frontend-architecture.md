@@ -1,43 +1,72 @@
-# Frontend architecture
+# Architecture
 
 ## Repository layout
 
 ```text
 Git_Happens/
-├── frontend/                 Next.js application and npm package
-│   ├── src/app/page.tsx      Landing page, input, preview, snippet
-│   ├── src/app/globals.css   Responsive styling
-│   ├── src/components/ui/   Project-owned UI and visual components
-│   ├── src/app/api/blame.svg/route.ts   Live SVG leaderboard / error card
-│   ├── src/app/api/analysis/route.ts    Live JSON analysis
-│   └── src/lib/              Parser, analysis service (cache), SVG renderer
-├── backend/                  Commit analyser (see backend/docs)
-├── shared/analysis.ts        Canonical analyser/frontend types
-├── docs/                     Implementation documentation
-└── README.md                 Project entry point and execution plan
+├── frontend/                          Next.js 16 app (deployed to Vercel)
+│   ├── public/logo/                   Git Exposed logo
+│   └── src/
+│       ├── app/
+│       │   ├── page.tsx               Landing page: hero, verdict, rap sheet
+│       │   ├── layout.tsx             <html>, page title and description
+│       │   ├── globals.css            All styling (dark, GitHub-inspired)
+│       │   ├── icon.svg, apple-icon.png   Favicons
+│       │   └── api/
+│       │       ├── analysis/route.ts          JSON analysis
+│       │       ├── blame.svg/route.ts         Leaderboard SVG / error card
+│       │       └── charts/[chart]/route.ts    Chart SVGs
+│       ├── components/
+│       │   ├── insights.tsx           Charges, score explainer, evidence board, embed bar
+│       │   └── ui/                    shadcn/ui, Magic UI and Aceternity components
+│       └── lib/
+│           ├── analysis-service.ts    Server-only cache around the analyser
+│           ├── leaderboard-svg.ts     Leaderboard and error card renderer
+│           ├── charts-svg.ts          Chart renderers (shared by page and API)
+│           ├── score.ts               Score breakdown helpers for the explainer
+│           ├── achievement-meta.ts    Achievement emoji, tone, tagline and description
+│           └── repository.ts          owner/repo and URL parsing for the input
+├── backend/                           Commit analyser (see backend/docs)
+├── shared/analysis.ts                 Data contract shared by both sides
+├── docs/                              Project documentation
+└── README.md                          Project overview
 ```
 
-The separate `frontend/` folder keeps Next.js dependencies and build files away from the backend. The root `shared/` folder holds the data contract both sides need. The frontend imports the analyser through the `@backend/*` path alias.
+`frontend/` keeps the Next.js dependencies and build output away from the analyser. The frontend imports the
+analyser through the `@backend/*` alias and the contract through `@shared/*`.
 
-The visual layer uses Tailwind CSS v4 and shadcn/ui primitives, with a Magic UI border beam, an Aceternity spotlight, and Motion for React transitions. Theme colors and responsive layout live in `frontend/src/app/globals.css`. The app stays in dark mode with GitHub-inspired navy surfaces and blue accents.
+The visual layer uses Tailwind CSS v4 and shadcn/ui primitives, with a Magic UI border beam on the
+leaderboard card, an Aceternity spotlight behind the hero, and Motion for React for transitions.
 
-## Current data flow
+## Data flow
 
 ```text
-Repository input → parseRepository → selected owner/repo
-   ├─→ fetch /api/analysis ─┐
-   └─→ <img /api/blame.svg> ─┴→ getAnalysis()  (lib/analysis-service.ts: cache + de-duplication)
-                                   └→ analyseRepositoryDetailed()  (backend/, GitHub via Octokit)
-/api/analysis  → JSON → charge sheet + rap sheet
-/api/blame.svg → generateLeaderboardSVG / generateErrorSVG → SVG preview / README image
+Repository input → parseRepository → owner/repo (also written to ?repo=)
+   ├─→ fetch /api/analysis ───────┐
+   ├─→ <img /api/blame.svg> ──────┼→ getAnalysis()      lib/analysis-service.ts (cache + de-duplication)
+   └─  README embeds of charts ───┘     └→ analyseRepositoryDetailed()   backend/, GitHub via Octokit
+
+/api/analysis       → JSON → charge sheet, charges, rap sheet, score explainer,
+                             evidence board (charts rendered in the browser with lib/charts-svg.ts)
+/api/blame.svg      → generateLeaderboardSVG / generateErrorSVG
+/api/charts/<id>.svg → renderChart(id, analysis, theme)
 ```
 
-Both routes share one server-side analysis service, so the page and the image always show the same result and
-share a cache. The page imports only `@backend/analysis/achievements` (rule text) and types, never the
-analyser itself, so Octokit stays out of the browser bundle.
+All three routes share one analysis service, so the page, the leaderboard and the embeds always show the same
+result and share a cache. The landing page renders the evidence-board charts itself from the JSON, using the same
+renderer as the API, so the preview and the embed match exactly.
+
+## Keeping secrets out of the browser
+
+`page.tsx` and `insights.tsx` are client components. They import only types, `@backend/analysis/achievements`
+(rule text) and the scoring constants, never the analyser itself. Octokit and `GITHUB_TOKEN` stay on the server.
+`analysis-service.ts` must never be imported from a client component.
 
 ## Shared contract
 
-`shared/analysis.ts` defines `DeveloperStats` and `RepositoryAnalysis`. It follows the 10-hour execution plan: username, commit and revert counts, late-night, large-commit and suspicious-message counts, lines changed, blame score, achievements, repository name, and analysis timestamp. Charlie's `analyseRepository(owner, repo)` should return `Promise<RepositoryAnalysis>`.
+`shared/analysis.ts` defines `DeveloperStats` and `RepositoryAnalysis`. The backend also returns the extended
+`DetailedRepositoryAnalysis` (evidence links, extra counters, `meta.activity` for the heatmap).
+See [backend/docs/data-contract.md](../backend/docs/data-contract.md).
 
-The SVG renderer accepts a `RepositoryAnalysis` object and returns an SVG string. It must continue to XML-escape any text from GitHub before interpolation. The DEMO DATA badge is now optional (`{ demo: true }`) and off for live data. `generateErrorSVG(repository, code, retryAt)` renders error cards.
+The SVG renderers take analysis objects and return SVG strings. They must XML-escape any text from GitHub
+before interpolating it. `generateErrorSVG(repository, code, retryAt)` renders error cards.

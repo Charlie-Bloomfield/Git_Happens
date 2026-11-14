@@ -60,3 +60,7 @@ Listed in this order on each developer; anyone with none gets **Innocent (For No
 
 Rules live in `src/analysis/achievements.ts` (`ACHIEVEMENT_RULES`) so the UI can render the
 criteria directly instead of duplicating this table.
+
+Weekend Warrior and Friday Deployer are tags only: they don't add to the blame score. The jokey taglines and
+descriptions shown on the site live in `frontend/src/lib/achievement-meta.ts`
+(see [docs/04-page-guide-and-tone.md](../../docs/04-page-guide-and-tone.md)).
