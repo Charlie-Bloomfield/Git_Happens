@@ -52,7 +52,6 @@ function frame(t: Tokens, o: { id: string; title: string; subtitle: string; heig
   <text x="28" y="92" fill="${t.text}" font-size="27" font-weight="800">${escapeXml(o.title)}</text>
   <text x="28" y="120" fill="${t.secondary}" font-size="14">${escapeXml(o.subtitle)}</text>
   ${o.body}
-  <text x="28" y="${o.height - 23}" fill="${t.muted}" font-size="12">Your commits. Our judgement. · Entertainment only</text>
 </svg>`;
 }
 
@@ -268,12 +267,12 @@ function commitShare(a: ChartInput, t: Tokens): string {
 }
 
 export const CHARTS = {
-  "score-breakdown": { title: "Score breakdown", description: "Stacked bars showing which sins make up each suspect's blame score.", render: scoreBreakdownChart },
-  "shame-mix": { title: "Anatomy of shame", description: "Donut of the repo's total shame points by signal.", render: shameMix },
-  "commit-share": { title: "Commit share", description: "Donut of who wrote the commits.", render: commitShare },
-  heatmap: { title: "Crime-time heatmap", description: "Commits by weekday and hour, with the late-night zone outlined.", render: heatmap },
-  awards: { title: "Charges filed", description: "How many suspects hold each achievement.", render: awards },
-} as const satisfies Record<string, { title: string; description: string; render: (a: ChartInput, t: Tokens) => string }>;
+  "score-breakdown": { title: "Score breakdown", render: scoreBreakdownChart },
+  "shame-mix": { title: "Anatomy of shame", render: shameMix },
+  "commit-share": { title: "Commit share", render: commitShare },
+  heatmap: { title: "Crime-time heatmap", render: heatmap },
+  awards: { title: "Charges filed", render: awards },
+} as const satisfies Record<string, { title: string; render: (a: ChartInput, t: Tokens) => string }>;
 
 export type ChartId = keyof typeof CHARTS;
 export const CHART_IDS = Object.keys(CHARTS) as ChartId[];
