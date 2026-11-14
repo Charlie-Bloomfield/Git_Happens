@@ -1,0 +1,9 @@
+# Vercel installs dependencies and builds remotely; don't upload local artefacts.
+node_modules
+**/node_modules
+frontend/.next
+**/*.tsbuildinfo
+.env*
+.DS_Store
+.claude
+git happens.md
