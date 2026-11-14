@@ -22,8 +22,8 @@ Live analysis rendered as an SVG leaderboard (`Content-Type: image/svg+xml`).
 
 | Case | Status | Body |
 | --- | --- | --- |
-| Success | 200 | Leaderboard card, `X-Git-Happens-Data: live` |
-| Analysis error (not found, empty, rate limited, GitHub down) | **200** | Error card, `X-Git-Happens-Data: error:<CODE>` |
+| Success | 200 | Leaderboard card, `X-Git-Exposed-Data: live` |
+| Analysis error (not found, empty, rate limited, GitHub down) | **200** | Error card, `X-Git-Exposed-Data: error:<CODE>` |
 | Missing/malformed `repo` | 400 | Plain text |
 
 Analysis errors return 200 on purpose: GitHub's image proxy shows a broken image for non-2xx responses.
@@ -45,7 +45,7 @@ To match the reader's GitHub theme, use `<picture>` (the site's "Auto" option co
 ```html
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://git-happens-peach.vercel.app/api/charts/heatmap.svg?repo=OWNER/REPO">
-  <img alt="Git Happens · Crime-time heatmap" src="https://git-happens-peach.vercel.app/api/charts/heatmap.svg?repo=OWNER/REPO&theme=light">
+  <img alt="Git Exposed · Crime-time heatmap" src="https://git-happens-peach.vercel.app/api/charts/heatmap.svg?repo=OWNER/REPO&theme=light">
 </picture>
 ```
 
@@ -59,7 +59,7 @@ JSON for the landing page / dashboard: the `shared/analysis.ts` contract plus ev
 
 `frontend/src/lib/analysis-service.ts` keeps an in-memory cache per server instance, keyed on lowercased
 `owner/repo`: successes for 1 hour, errors for 1–10 minutes (rate limits until GitHub's reset time).
-Concurrent requests for the same repo share one analysis. `X-Git-Happens-Cache: hit|miss` shows which one
+Concurrent requests for the same repo share one analysis. `X-Git-Exposed-Cache: hit|miss` shows which one
 happened. Responses also send `Cache-Control` so GitHub's image proxy and CDNs can cache them.
 
 ## Deployment
@@ -84,7 +84,7 @@ The frontend imports the analyser from `../backend` (alias `@backend/*`) and the
 ## Production
 
 - URL: https://git-happens-peach.vercel.app
-- README embed: `![Git Happens](https://git-happens-peach.vercel.app/api/blame.svg?repo=OWNER/REPO)`
+- README embed: `![Git Exposed](https://git-happens-peach.vercel.app/api/blame.svg?repo=OWNER/REPO)`
 - Vercel project `git-happens`: root directory `frontend`, install command `npm run install:all`, `GITHUB_TOKEN` set for Production.
 - Redeploy from the repo root with `npx vercel deploy --prod`. The project isn't connected to GitHub yet, so pushes don't deploy
   automatically; install the Vercel GitHub app on the repo and run `vercel git connect` to enable that.

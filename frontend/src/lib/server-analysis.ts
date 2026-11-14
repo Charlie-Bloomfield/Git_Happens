@@ -7,8 +7,8 @@ type AnalysisStore = {
   pending: Map<string, Promise<RepositoryAnalysis>>;
 };
 
-const scope = globalThis as typeof globalThis & { gitHappensAnalysisStore?: AnalysisStore };
-const store = scope.gitHappensAnalysisStore ??= { cache: new Map(), pending: new Map() };
+const scope = globalThis as typeof globalThis & { gitExposedAnalysisStore?: AnalysisStore };
+const store = scope.gitExposedAnalysisStore ??= { cache: new Map(), pending: new Map() };
 const ttlMs = 15 * 60 * 1000;
 
 export async function getRepositoryAnalysis(repository: string): Promise<RepositoryAnalysis> {

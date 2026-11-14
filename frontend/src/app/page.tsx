@@ -46,7 +46,7 @@ export default function Home() {
   const arrowTimer = useRef<number | null>(null);
   const shouldReduceMotion = useReducedMotion();
   const imagePath = `/api/blame.svg?repo=${encodeURIComponent(repository)}`;
-  const snippet = `![Git Happens leaderboard](${origin}${imagePath})`;
+  const snippet = `![Git Exposed leaderboard](${origin}${imagePath})`;
 
   useEffect(() => {
     setOrigin(window.location.origin);
@@ -125,9 +125,9 @@ export default function Home() {
 
   return <MotionConfig reducedMotion="user"><main>
     <header className="site-header shell">
-      <a className="brand" href="#top" aria-label="Git Happens home">
-        <img className="brand-image" src="/logo/git_happens_transparent.svg" alt="" />
-        <span className="brand-name">git<span>happens</span></span>
+      <a className="brand" href="#top" aria-label="Git Exposed home">
+        <img className="brand-image" src="/logo/git_exposed_transparent.svg" alt="" />
+        <span className="brand-name">git<span>exposed</span></span>
       </a>
       <a className="header-link" href="https://github.com/Charlie-Bloomfield/Git_Happens" target="_blank" rel="noreferrer"><GitBranch size={17} /> <span>Source code</span> <ArrowUpRight size={16} /></a>
     </header>
@@ -173,7 +173,7 @@ export default function Home() {
             <strong>Hall of Shame leaderboard</strong><span>Every suspect, ranked. The main README card.</span>
             <EmbedBar snippet={snippet} copied={copied} onCopy={copy} disabled={state.status !== "ready"} label="Copy README embed for the leaderboard" />
           </figcaption>
-          <div className="leaderboard-image">{state.status === "loading" ? <div className="skeleton" aria-label="Loading leaderboard"><GitCommitHorizontal size={36} /><span>Reading the receipts…</span></div> : <img key={imagePath} src={imagePath} alt={`Git Happens leaderboard for ${repository}`} />}</div>
+          <div className="leaderboard-image">{state.status === "loading" ? <div className="skeleton" aria-label="Loading leaderboard"><GitCommitHorizontal size={36} /><span>Reading the receipts…</span></div> : <img key={imagePath} src={imagePath} alt={`Git Exposed leaderboard for ${repository}`} />}</div>
           <BorderBeam className="beam" size={95} duration={10} colorFrom="#58a6ff" colorTo="#f78166" borderWidth={1} />
         </figure>
         <Card className="stats-panel">
@@ -202,7 +202,7 @@ export default function Home() {
     {analysis && developers.length > 0 ? <ScoreExplainer developers={developers} selected={explained} onSelect={setExplained} /> : null}
     {analysis && developers.length > 0 ? <EvidenceBoard analysis={analysis} origin={origin} /> : null}
 
-    <footer className="shell footer"><span className="footer-brand"><img className="footer-brand-image" src="/logo/git_happens_transparent.svg" alt="Git Happens" /></span><span>Built for laughs. Based on commits, not competence.</span><span>© 2026 GIT HAPPENS</span></footer>
+    <footer className="shell footer"><span className="footer-brand"><img className="footer-brand-image" src="/logo/git_exposed_transparent.svg" alt="Git Exposed" /></span><span>Built for laughs. Based on commits, not competence.</span><span>© 2026 GIT EXPOSED</span></footer>
   </main></MotionConfig>;
 }
 

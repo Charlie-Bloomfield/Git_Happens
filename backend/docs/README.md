@@ -1,4 +1,4 @@
-# Git Happens — Backend docs
+# Git Exposed — Backend docs
 
 The backend turns a public GitHub repository's commit history into a `RepositoryAnalysis`:
 a leaderboard of developers with blame scores and achievements. The frontend (SVG route,

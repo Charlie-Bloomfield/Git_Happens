@@ -35,8 +35,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ char
     headers: {
       "Content-Type": "image/svg+xml; charset=utf-8",
       "Cache-Control": maxAge > 0 ? `public, max-age=${maxAge}, s-maxage=${maxAge}` : "no-store",
-      "X-Git-Happens-Data": result.ok ? "live" : `error:${result.error.code}`,
-      "X-Git-Happens-Cache": result.cached ? "hit" : "miss",
+      "X-Git-Exposed-Data": result.ok ? "live" : `error:${result.error.code}`,
+      "X-Git-Exposed-Cache": result.cached ? "hit" : "miss",
     },
   });
 }

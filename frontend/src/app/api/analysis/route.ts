@@ -30,7 +30,7 @@ export async function GET(request: Request): Promise<Response> {
   const maxAge = cacheSeconds(result);
   const headers = {
     "Cache-Control": maxAge > 0 ? `public, max-age=${maxAge}, s-maxage=${maxAge}` : "no-store",
-    "X-Git-Happens-Cache": result.cached ? "hit" : "miss",
+    "X-Git-Exposed-Cache": result.cached ? "hit" : "miss",
   };
 
   return result.ok

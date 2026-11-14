@@ -1,4 +1,4 @@
-# Git Happens — scoring & achievements
+# Git Exposed — scoring & achievements
 
 > **Entertainment only.** These heuristics describe commit *habits*. They do not prove bugs,
 > blame, or incompetence. Every statistic links back to the commits that produced it.

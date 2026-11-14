@@ -27,10 +27,10 @@ export function generateLeaderboardSVG(analysis: RepositoryAnalysis, options: { 
       }).join("")
     : `<text x="380" y="208" text-anchor="middle" fill="#97a2af" font-size="17">No contributors found yet.</text>`;
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" font-family="${FONT}" role="img" aria-label="Git Happens ${options.demo ? "demo " : ""}leaderboard for ${escapeXml(analysis.repository)}">
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" font-family="${FONT}" role="img" aria-label="Git Exposed ${options.demo ? "demo " : ""}leaderboard for ${escapeXml(analysis.repository)}">
     <rect width="${width}" height="${height}" rx="22" fill="#0d1013"/>
     <rect x="0.5" y="0.5" width="759" height="${height - 1}" rx="21.5" fill="none" stroke="#3f4852"/>
-    <text x="28" y="54" fill="#58a6ff" font-size="13" font-weight="800" letter-spacing="3">GIT HAPPENS</text>
+    <text x="28" y="54" fill="#58a6ff" font-size="13" font-weight="800" letter-spacing="3">GIT EXPOSED</text>
     <text x="28" y="92" fill="#e6edf3" font-size="27" font-weight="800">Hall of Shame</text>
     <text x="28" y="120" fill="#97a2af" font-size="14">${escapeXml(analysis.repository)}</text>
     ${options.demo ? `<rect x="608" y="30" width="124" height="30" rx="15" fill="#5b2825"/>
@@ -55,10 +55,10 @@ export function generateErrorSVG(repository: string, code: string, retryAt?: str
     : " Try again shortly.";
   const width = 760;
   const height = 220;
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" font-family="${FONT}" role="img" aria-label="Git Happens: ${escapeXml(copy.title)}">
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" font-family="${FONT}" role="img" aria-label="Git Exposed: ${escapeXml(copy.title)}">
     <rect width="${width}" height="${height}" rx="22" fill="#0d1013"/>
     <rect x="0.5" y="0.5" width="759" height="${height - 1}" rx="21.5" fill="none" stroke="#914740"/>
-    <text x="28" y="54" fill="#58a6ff" font-size="13" font-weight="800" letter-spacing="3">GIT HAPPENS</text>
+    <text x="28" y="54" fill="#58a6ff" font-size="13" font-weight="800" letter-spacing="3">GIT EXPOSED</text>
     <text x="28" y="98" fill="#e6edf3" font-size="27" font-weight="800">${escapeXml(copy.title)}</text>
     <text x="28" y="130" fill="#ff9b91" font-size="15">${escapeXml(copy.detail + retry)}</text>
     <text x="28" y="158" fill="#7c8897" font-size="13">${escapeXml(repository)}</text>

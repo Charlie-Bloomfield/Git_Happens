@@ -1,5 +1,5 @@
 {
-  "name": "git-happens",
+  "name": "git-exposed",
   "version": "0.1.0",
   "description": "**Team:** You and Charlie   **Theme:** Hate the User   **Goal:** Deploy a service that analyses a public GitHub repository, ranks contributors by questionable coding habits, awards humorous achievements, and generates an SVG leaderboard embeddable in a GitHub README.",
   "private": true,

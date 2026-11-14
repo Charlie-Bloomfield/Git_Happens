@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Git Happens — Your commits. Our judgement.",
+  title: "Git Exposed — Your commits. Our judgement.",
   description: "A playful Hall of Shame for your Git history, ready for your README.",
 };
 

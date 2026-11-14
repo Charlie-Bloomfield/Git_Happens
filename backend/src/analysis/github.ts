@@ -22,7 +22,7 @@ export interface FetchedHistory {
 export function createOctokit(token = process.env.GITHUB_TOKEN): Octokit {
     return new Octokit({
         auth: token || undefined,
-        userAgent: 'git-happens',
+        userAgent: 'git-exposed',
         request: { timeout: 15_000 },
         // Request failures are mapped to AnalysisError by the caller; don't double-log them.
         log: { debug: () => {}, info: () => {}, warn: console.warn, error: () => {} },

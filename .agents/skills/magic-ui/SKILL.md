@@ -9,6 +9,6 @@ Use Magic UI for a specific visual component that improves the requested interfa
 
 This repository's app lives in `frontend/` and currently uses plain CSS, without Tailwind or shadcn configuration. Magic UI uses the shadcn registry workflow. If the chosen component needs Tailwind or shadcn, set up those prerequisites in `frontend/` while preserving the existing styling. Install only the selected component with `npx shadcn@latest add @magicui/<component>` from `frontend/`, then inspect the generated code and dependencies.
 
-Adapt colors, typography, and sizing to the Git Happens design. Check mobile layout, keyboard behavior, and reduced-motion behavior for animated effects. Run `npm run build` and `npm run typecheck` after integration.
+Adapt colors, typography, and sizing to the Git Exposed design. Check mobile layout, keyboard behavior, and reduced-motion behavior for animated effects. Run `npm run build` and `npm run typecheck` after integration.
 
 Official source: https://magicui.design/docs/installation
