@@ -45,6 +45,13 @@ describe('computeAnalysis (acme/widgets fixture)', () => {
         expect(byName['Carol C']!.achievements).toEqual(['One-Hit Wonder']);
     });
 
+    it('builds a 7×24 weekday-by-hour activity grid covering every analysed commit', () => {
+        const { activity, commitsAnalysed } = result.meta;
+        expect(activity).toHaveLength(7);
+        expect(activity.every((row) => row.length === 24)).toBe(true);
+        expect(activity.flat().reduce((sum, n) => sum + n, 0)).toBe(commitsAnalysed);
+    });
+
     it('is deterministic regardless of input order', () => {
         const reversed = computeAnalysis('acme/widgets', [...teamRepoCommits].reverse(), { now: NOW });
         expect(toRepositoryAnalysis(reversed)).toEqual(toRepositoryAnalysis(result));

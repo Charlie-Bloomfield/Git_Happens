@@ -65,6 +65,8 @@ interface AnalysisMeta {
     botCommitsSkipped: number;
     truncated: boolean;            // history was capped at maxCommits
     timeZone: string;
+    /** Commits by local weekday (0 = Sunday) × hour (0–23). Powers the crime-time heatmap. */
+    activity: number[][];
 }
 
 interface DetailedRepositoryAnalysis extends RepositoryAnalysis {

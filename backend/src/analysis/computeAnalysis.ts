@@ -40,6 +40,8 @@ export interface AnalysisMeta {
     /** True when the commit history was capped and older commits were not analysed. */
     truncated: boolean;
     timeZone: string;
+    /** Commit counts by local weekday (0 = Sunday) × hour (0–23), for the crime-time heatmap. */
+    activity: number[][];
 }
 
 export interface DetailedRepositoryAnalysis extends RepositoryAnalysis {
@@ -71,6 +73,7 @@ export function computeAnalysis(
     let botCommitsSkipped = 0;
     let commitsAnalysed = 0;
     let commitsWithLineStats = 0;
+    const activity = Array.from({ length: 7 }, () => new Array<number>(24).fill(0));
 
     for (const commit of commits) {
         if (isMergeCommit(commit)) {
@@ -91,6 +94,7 @@ export function computeAnalysis(
         }
 
         const time = localTime(commit.authoredAt, timeZone);
+        if (time) activity[time.weekday]![time.hour]!++;
         const large = isLargeCommit(commit);
         const add = (list: string[]) => {
             if (list.length < maxEvidence) list.push(commit.url);
@@ -153,6 +157,7 @@ export function computeAnalysis(
             botCommitsSkipped,
             truncated: options.truncated ?? false,
             timeZone,
+            activity,
         },
     };
 }

@@ -28,6 +28,27 @@ Live analysis rendered as an SVG leaderboard (`Content-Type: image/svg+xml`).
 
 Analysis errors return 200 on purpose: GitHub's image proxy shows a broken image for non-2xx responses.
 
+### `GET /api/charts/<chart>.svg?repo=owner/repo[&theme=light]`
+
+README-embeddable chart cards rendered by `frontend/src/lib/charts-svg.ts`. The landing page renders the same SVGs inline, so the page and the embed always match. Default theme is dark; `theme=light` suits GitHub's light mode. Errors return the same 200 error card as the leaderboard, and unknown chart IDs return a 404.
+
+| Chart | Shows |
+| --- | --- |
+| `score-breakdown` | Stacked bars splitting each suspect's blame score by signal (reverts, large, late-night, suspicious). |
+| `shame-mix` | Donut of the repo's total shame points by signal. |
+| `commit-share` | Donut of commits per contributor (top 5 + others). |
+| `heatmap` | Weekday × hour commit heatmap, with the late-night zone and Friday evening outlined. |
+| `awards` | How many suspects hold each achievement. |
+
+To match the reader's GitHub theme, use `<picture>` (the site's "Auto" option copies this):
+
+```html
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://git-happens-peach.vercel.app/api/charts/heatmap.svg?repo=OWNER/REPO">
+  <img alt="Git Happens · Crime-time heatmap" src="https://git-happens-peach.vercel.app/api/charts/heatmap.svg?repo=OWNER/REPO&theme=light">
+</picture>
+```
+
 ### `GET /api/analysis?repo=owner/repo`
 
 JSON for the landing page / dashboard: the `shared/analysis.ts` contract plus evidence links and `meta`
