@@ -5,7 +5,8 @@
 The Next.js app is in `frontend/`, Charlie's analyser is in `backend/`, and both use the contract in `shared/`. The landing page starts with a labelled demo preview and fetches real GitHub analysis after you submit a public repository.
 
 ```sh
-npm ci
+cd frontend
+npm run install:all
 npm run dev
 ```
 
