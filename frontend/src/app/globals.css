@@ -40,8 +40,9 @@ main { overflow: hidden; background: radial-gradient(circle at 82% 5%, #171f29 0
 
 .site-header { height: 83px; display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 5; border-bottom: 1px solid #262b32; }
 .brand { display: inline-flex; align-items: center; gap: 11px; font-size: 24px; font-weight: 700; letter-spacing: -1.7px; }
-.brand-mark { width: 39px; height: 39px; display: grid; place-items: center; color: #081525; background: #58a6ff; border-radius: 9px; box-shadow: 0 0 32px #58a6ff28; }
-.brand-accent, .brand-dot { color: #58a6ff; }
+.brand-image { display: block; width: auto; height: 56px; object-fit: contain; }
+.brand-name { white-space: nowrap; color: #e6edf3; }
+.brand-name span { color: #58a6ff; }
 .header-right { display: flex; align-items: center; gap: 32px; }
 .header-meta { color: #717881; font: 10px "DM Mono", monospace; letter-spacing: 1.8px; }
 .header-link { display: inline-flex; align-items: center; gap: 8px; color: #c4cbd3; font-size: 13px; font-weight: 600; transition: color .2s; }
@@ -164,7 +165,7 @@ main { overflow: hidden; background: radial-gradient(circle at 82% 5%, #171f29 0
 .copy-button[data-slot="button"]:hover { background: #79b8ff; }
 .footer { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 27px 0 37px; border-top: 1px solid #26364a; color: #626c77; font-size: 11px; }
 .footer-brand { color: #e6edf3; font-size: 19px; font-weight: 700; letter-spacing: -1.5px; }
-.footer-brand span { color: #58a6ff; }
+.footer-brand-image { display: block; width: auto; height: 36px; object-fit: contain; }
 .footer > span:last-child { font: 10px "DM Mono", monospace; letter-spacing: 1px; }
 
 /* ── Achievement tones ── */
@@ -294,7 +295,7 @@ main { overflow: hidden; background: radial-gradient(circle at 82% 5%, #171f29 0
 }
 @media (max-width: 620px) {
   .shell { width: min(100% - 32px, 1230px); }
-  .site-header { height: 68px; } .brand { font-size: 21px; } .brand-mark { width: 34px; height: 34px; }
+  .site-header { height: 68px; } .brand { font-size: 21px; } .brand-image { height: 44px; }
   .header-meta, .header-link span { display: none; } .header-link { gap: 3px; }
   .hero { padding-block: 68px 72px; }
   .hero h1 { font-size: clamp(47px, 11vw, 62px); line-height: 1.04; letter-spacing: -4px; margin-top: 22px; }

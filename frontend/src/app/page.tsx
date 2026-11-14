@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, MotionConfig, motion } from "motion/react";
-import { ArrowDownRight, ArrowRight, ArrowUpRight, Check, ChevronRight, Copy, GitBranch, GitCommitHorizontal, Search, ShieldAlert, Terminal, Zap } from "lucide-react";
+import { ArrowDownRight, ArrowRight, ArrowUpRight, Check, ChevronRight, Copy, GitBranch, GitCommitHorizontal, Search, ShieldAlert, Zap } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { BorderBeam } from "@/components/ui/border-beam";
@@ -106,7 +106,10 @@ export default function Home() {
 
   return <MotionConfig reducedMotion="user"><main>
     <header className="site-header shell">
-      <a className="brand" href="#top" aria-label="Git Happens home"><span className="brand-mark"><Terminal size={22} strokeWidth={2.4} /></span><span>git<span className="brand-accent">happens</span><span className="brand-dot">.</span></span></a>
+      <a className="brand" href="#top" aria-label="Git Happens home">
+        <img className="brand-image" src="/logo/git_happens_transparent.svg" alt="" />
+        <span className="brand-name">git<span>happens</span></span>
+      </a>
       <div className="header-right"><span className="header-meta">THE PUBLIC REPO AUTOPSY</span><a className="header-link" href="https://github.com/Charlie-Bloomfield/Git_Happens" target="_blank" rel="noreferrer"><GitBranch size={17} /> <span>Source code</span> <ArrowUpRight size={16} /></a></div>
     </header>
 
@@ -180,7 +183,7 @@ export default function Home() {
 
     <section className="embed shell" aria-labelledby="embed-title"><div><div className="section-kicker"><span>04</span> / THE PUBLIC RECORD</div><h2 id="embed-title">Wear your <span>shame.</span></h2><p>Every README deserves a warning label. Copy the leaderboard embed and let visitors see the verdict. Every chart on the evidence board has its own embed too. GitHub caches images, so updates can lag.</p><ArrowDownRight size={30} className="embed-arrow" /></div><Card className="embed-code"><div className="embed-label">README.MD <span>MARKDOWN / IMAGE</span></div><div className="code-row"><code>{snippet}</code><Button type="button" onClick={copy} disabled={state.status !== "ready"} className="copy-button" aria-label="Copy README Markdown">{copied ? <><Check size={16} /> Copied</> : <><Copy size={16} /> Copy</>}</Button></div></Card></section>
 
-    <footer className="shell footer"><span className="footer-brand">git<span>happens</span>.</span><span>Built for laughs. Based on commits, not competence.</span><span>© 2026 GIT HAPPENS</span></footer>
+    <footer className="shell footer"><span className="footer-brand"><img className="footer-brand-image" src="/logo/git_happens_transparent.svg" alt="Git Happens" /></span><span>Built for laughs. Based on commits, not competence.</span><span>© 2026 GIT HAPPENS</span></footer>
   </main></MotionConfig>;
 }
 
