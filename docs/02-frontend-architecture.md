@@ -7,6 +7,7 @@ Git_Happens/
 ├── frontend/                 Next.js application and npm package
 │   ├── src/app/page.tsx      Landing page, input, preview, snippet
 │   ├── src/app/globals.css   Responsive styling
+│   ├── src/components/ui/   Project-owned UI and visual components
 │   ├── src/app/api/blame.svg/route.ts   Live SVG leaderboard / error card
 │   ├── src/app/api/analysis/route.ts    Live JSON analysis
 │   └── src/lib/              Parser, analysis service (cache), SVG renderer
@@ -17,6 +18,8 @@ Git_Happens/
 ```
 
 The separate `frontend/` folder keeps Next.js dependencies and build files away from the backend. The root `shared/` folder holds the data contract both sides need. The frontend imports the analyser through the `@backend/*` path alias.
+
+The visual layer uses Tailwind CSS v4 and shadcn/ui primitives, with a Magic UI border beam, an Aceternity spotlight, and Motion for React transitions. Theme colors and responsive layout live in `frontend/src/app/globals.css`. The app stays in dark mode with GitHub-inspired navy surfaces and blue accents.
 
 ## Current data flow
 
