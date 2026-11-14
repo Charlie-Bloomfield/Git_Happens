@@ -1,5 +1,9 @@
 # Integration guide (for the server / SVG side)
 
+> **Status:** implemented on the frontend in `frontend/src/lib/analysis-service.ts`,
+> `frontend/src/app/api/blame.svg/route.ts` and `frontend/src/app/api/analysis/route.ts`.
+> See `docs/03-running-and-integration.md` for the API and deployment notes. This guide explains the reasoning.
+
 ## Calling the analyser from a route
 
 ```ts

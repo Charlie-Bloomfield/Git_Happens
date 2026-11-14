@@ -4,23 +4,33 @@
 
 - A Next.js 16 app with a responsive landing page and repository input.
 - Input normalization for `owner/repo` and HTTPS `github.com/owner/repo` URLs.
-- A mock `RepositoryAnalysis` fixture for UI development.
-- An SVG leaderboard renderer that sorts by blame score, displays up to five contributors, and escapes text for XML.
-- `GET /api/blame.svg?repo=owner/repo`, which validates the repository and returns an SVG or a 400 response.
-- A leaderboard preview, sample summary numbers, and a copyable README image snippet.
-- Visible **DEMO DATA** labels in the page and SVG so sample results are never presented as real analysis.
+- **Live analysis** using the backend analyser (`backend/`) through a cached server-side service.
+- `GET /api/blame.svg?repo=owner/repo`: live SVG leaderboard (top 5), or an SVG error card.
+- `GET /api/analysis?repo=owner/repo`: JSON analysis with links to the commits behind each stat, for the page.
+- Landing page:
+  - fetches `/api/analysis`, with loading (skeleton + "JUDGING…"), success and error states for each error code;
+  - live "charge sheet" totals, with notes on what was analysed (merges/bots skipped, line-stats coverage, time zone);
+  - **rap sheet**: every suspect's stats, achievements (hover shows the criteria) and links to the evidence commits;
+    top 12 shown, with a "show all" toggle;
+  - shareable links: `/?repo=owner/repo` opens straight to that verdict;
+  - copyable README image snippet.
+- The SVG renderer escapes all text for XML, uses a sans-serif font stack and correct singular/plural wording.
 
 ## Current limitations
 
-The endpoint currently returns the same sample contributors for every valid repository. No GitHub requests or real scoring run yet. The `Cache-Control` header caches the demo SVG response at the HTTP layer, but there is no cache for repository analysis. A snippet copied from localhost is only usable locally until the app is deployed to a public HTTPS domain.
+- The in-memory analysis cache is per server instance and resets on restart/redeploy.
+- Without `GITHUB_TOKEN`, GitHub allows 60 requests/hour per IP (about 4–5 uncached analyses). Set a token for the demo.
+- `largeCommits` / `linesChanged` only cover commits in the line-stats sample. The rap sheet shows "—" when a
+  developer has no sampled commits.
+- The README embed hasn't been tested on github.com yet; that needs a public HTTPS deployment.
 
-Live analysis, achievement calculation, error states for GitHub failures, analysis caching, deployment, and an actual README embed test are still open items from the execution plan.
+## Verification performed
 
-## Verification already performed
+- `npm run build` and `npm run typecheck` pass from `frontend/`; the backend's 48 tests pass.
+- Production server (`next start`) tested with real repositories: live SVG, cache hit on a repeat request
+  regardless of capitals, JSON endpoint, not-found card (SVG 200 / JSON 404), invalid input (400),
+  rate limit (SVG card with reset time / JSON 429).
+- Screenshots checked at desktop width and ~600px mobile width; no horizontal overflow.
+- The client bundle contains no Octokit or `GITHUB_TOKEN` code.
 
-- `npm run build` completed successfully from `frontend/` after the folder move.
-- `npm run typecheck` passed from `frontend/` after the folder move.
-- In the browser, submitting a full GitHub URL updated the preview and snippet, and the copy button confirmed a successful copy.
-- The SVG route returned `200` with `image/svg+xml` for a valid repository and `400` for an invalid one.
-
-The commands should be rerun after changes to the analyser or route. See [Running and integration](./03-running-and-integration.md).
+See [Running and integration](./03-running-and-integration.md).
