@@ -1,6 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { AnimatePresence, MotionConfig, motion } from "motion/react";
+import { ArrowDownRight, ArrowRight, ArrowUpRight, Check, ChevronRight, Copy, GitBranch, GitCommitHorizontal, Search, ShieldAlert, Terminal, Zap } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { BorderBeam } from "@/components/ui/border-beam";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Spotlight } from "@/components/ui/spotlight-new";
 // Import the rules file directly (not "@backend/analysis") so Octokit never reaches the client bundle.
 import { ACHIEVEMENT_RULES, FALLBACK_ACHIEVEMENT } from "@backend/analysis/achievements";
 import type { DetailedRepositoryAnalysis, DeveloperProfile } from "@backend/analysis";
@@ -35,6 +43,7 @@ export default function Home() {
   const [copied, setCopied] = useState(false);
   const [state, setState] = useState<State>({ status: "loading" });
   const [attempt, setAttempt] = useState(0);
+  const resultRef = useRef<HTMLElement>(null);
   const imagePath = `/api/blame.svg?repo=${encodeURIComponent(repository)}`;
   const snippet = `![Git Happens leaderboard](${origin}${imagePath})`;
 
@@ -71,13 +80,16 @@ export default function Home() {
       setFormError("Enter owner/repo or a public https://github.com/owner/repo URL.");
       return;
     }
-    setRepository(parsed);
+    if (parsed === repository) setAttempt((count) => count + 1);
+    else setRepository(parsed);
     window.history.replaceState(null, "", `?repo=${encodeURIComponent(parsed)}`);
     setFormError("");
     setCopied(false);
+    requestAnimationFrame(() => resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
   }
 
   async function copy() {
+    if (state.status !== "ready") return;
     try {
       await navigator.clipboard.writeText(snippet);
       setCopied(true);
@@ -93,59 +105,72 @@ export default function Home() {
   const totalAwards = developers.reduce((sum, developer) => sum + developer.achievements.length, 0);
   const statusLabel = state.status === "loading" ? "JUDGING…" : state.status === "ready" ? "VERDICT READY" : "MISTRIAL";
 
-  return <main>
+  return <MotionConfig reducedMotion="user"><main>
     <header className="site-header shell">
-      <a className="brand" href="#top"><span className="brand-mark">&gt;_</span><span>git<span className="brand-accent">happens</span><span className="brand-dot">.</span></span></a>
-      <a className="header-link" href="https://github.com/Charlie-Bloomfield/Git_Happens" target="_blank" rel="noreferrer">View on GitHub <span aria-hidden="true">↗</span></a>
+      <a className="brand" href="#top" aria-label="Git Happens home"><span className="brand-mark"><Terminal size={22} strokeWidth={2.4} /></span><span>git<span className="brand-accent">happens</span><span className="brand-dot">.</span></span></a>
+      <div className="header-right"><span className="header-meta">THE PUBLIC REPO AUTOPSY</span><a className="header-link" href="https://github.com/Charlie-Bloomfield/Git_Happens" target="_blank" rel="noreferrer"><GitBranch size={17} /> <span>Source code</span> <ArrowUpRight size={16} /></a></div>
     </header>
 
     <section className="hero shell" id="top">
-      <div className="hero-copy">
-        <div className="eyebrow"><span className="eyebrow-pulse" /> THE GIT HISTORY JUDGEMENT ENGINE</div>
-        <h1>Your commits.<br /><em>Our judgement.</em></h1>
-        <p className="hero-description">Every repository has a story. Some are better left in the reflog. Turn your team’s Git history into a public, gloriously questionable leaderboard.</p>
-        <form onSubmit={submit} className="repo-form">
-          <label htmlFor="repository">PASTE A PUBLIC GITHUB REPOSITORY</label>
-          <div className="input-row"><span className="input-prefix" aria-hidden="true">↳</span><input id="repository" value={input} onChange={(event) => setInput(event.target.value)} placeholder="owner/repository" autoComplete="off" /><button type="submit" disabled={state.status === "loading"}>Judge this repo <span aria-hidden="true">→</span></button></div>
-          {formError ? <p className="form-error" role="alert">{formError}</p> : <p className="form-hint">Try a GitHub URL or just owner/repo. Public repositories only.</p>}
-        </form>
-        <div className="hero-note"><span className="note-icon">!</span> We read the latest 300 commits on the default branch. Scores are for entertainment, not performance reviews.</div>
-      </div>
-      <div className="hero-art" aria-hidden="true"><div className="art-grid" /><div className="art-orbit orbit-one" /><div className="art-orbit orbit-two" /><div className="art-symbol">git<span>!</span></div><div className="art-caption">COMMIT NOW, REGRET LATER_</div></div>
+      <div className="hero-spotlight" aria-hidden="true"><Spotlight gradientFirst="radial-gradient(68.54% 68.72% at 55.02% 31.46%, rgba(88, 166, 255, .13) 0, rgba(88, 166, 255, .025) 55%, transparent 80%)" gradientSecond="radial-gradient(50% 50% at 50% 50%, rgba(121, 184, 255, .07), transparent 80%)" gradientThird="radial-gradient(50% 50% at 50% 50%, rgba(88, 166, 255, .04), transparent 80%)" duration={14} xOffset={36} /></div>
+      <motion.div className="hero-copy" initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .55 }}>
+        <Badge variant="outline" className="eyebrow-badge"><span className="live-dot" /> THE GIT HISTORY JUDGEMENT ENGINE</Badge>
+        <h1>Your Git history<br />is <em>evidence.</em></h1>
+        <p className="hero-description">The commit log remembers everything. We read the receipts, rank the suspects, and turn your team&apos;s questionable decisions into a leaderboard.</p>
+        <Card className="query-card"><form onSubmit={submit} className="repo-form">
+          <label htmlFor="repository">ENTER THE SCENE OF THE CRIME</label>
+          <div className="query-row"><span className="query-icon" aria-hidden="true"><Search size={19} /></span><Input id="repository" value={input} onChange={(event) => setInput(event.target.value)} placeholder="owner/repository" autoComplete="off" aria-invalid={Boolean(formError)} /><Button type="submit" size="lg" className="judge-button" disabled={state.status === "loading"}>Judge this repo <ArrowRight size={18} /></Button></div>
+          {formError ? <p className="form-error" role="alert">{formError}</p> : <p className="form-hint">Public GitHub repositories only <span>·</span> URLs work too</p>}
+        </form></Card>
+        <div className="hero-note"><ShieldAlert size={16} /><span>We read the latest 300 commits on the default branch. Scores are for entertainment, not performance reviews.</span></div>
+      </motion.div>
+      <motion.div className="hero-visual" initial={{ opacity: 0, x: 25 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: .6, delay: .1 }} aria-hidden="true">
+        <div className="visual-orbit orbit-one" /><div className="visual-orbit orbit-two" />
+        <Card className="terminal-card"><div className="terminal-top"><span className="terminal-lights"><i /><i /><i /></span><span>CASE_FILE_001.LOG</span><span className="terminal-signal">● LIVE</span></div><div className="terminal-body">
+          <div className="terminal-line"><span className="line-no">01</span><span className="line-command">$ git log --all --oneline</span></div>
+          <div className="terminal-line"><span className="line-no">02</span><span><b>9f2a7c1</b> fix: actually fix the fix</span></div>
+          <div className="terminal-line"><span className="line-no">03</span><span><b>72bfe43</b> wip please ignore</span></div>
+          <div className="terminal-line"><span className="line-no">04</span><span><b>2ac901d</b> final_final_v3</span></div>
+          <div className="terminal-line muted"><span className="line-no">05</span><span>...the evidence is compelling</span></div>
+          <div className="terminal-verdict"><span><Zap size={15} fill="currentColor" /> VERDICT</span><strong>GUILTY AS COMMITTED</strong></div>
+        </div><div className="terminal-stamp">EXHIBIT A</div></Card>
+        <span className="visual-caption">NO COMMIT IS SAFE // 001</span>
+      </motion.div>
     </section>
+    <div className="process-strip"><div className="shell process-inner"><span><b>01</b> ENTER REPO</span><ChevronRight size={15} /><span><b>02</b> EXAMINE COMMITS</span><ChevronRight size={15} /><span><b>03</b> EXPOSE RESULTS</span></div></div>
 
-    <section className="results shell" aria-labelledby="results-title" aria-busy={state.status === "loading"}>
+    <section className="results shell" ref={resultRef} aria-labelledby="results-title" aria-busy={state.status === "loading"} tabIndex={-1}>
       <div className="section-top">
         <div>
-          <div className="section-kicker">01 / THE VERDICT</div>
-          <h2 id="results-title">Hall of Shame <span className="heading-spark">✳</span></h2>
-          <p>Rankings for <strong>{analysis?.repository ?? repository}</strong>{analysis ? <span className="live-tag">ANALYSED {new Date(analysis.analysedAt).toLocaleString()}</span> : null}</p>
+          <div className="section-kicker"><span>01</span> / THE VERDICT</div>
+          <h2 id="results-title">Hall of <span>shame.</span></h2>
+          <p>Ranking the suspects in <strong>{analysis?.repository ?? repository}</strong>{analysis ? <span className="live-tag">ANALYSED {new Date(analysis.analysedAt).toLocaleString()}</span> : null}</p>
         </div>
-        <span className={`status status-${state.status}`} role="status"><span /> {statusLabel}</span>
+        <Badge variant="outline" className={`result-badge result-badge-${state.status}`} role="status"><span className="status-dot" /> {statusLabel}</Badge>
       </div>
 
-      {state.status === "error" ? <ErrorPanel error={state.error} onRetry={() => setAttempt((count) => count + 1)} /> : null}
+      <AnimatePresence>{state.status === "error" ? <motion.div key="error" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}><ErrorPanel error={state.error} onRetry={() => setAttempt((count) => count + 1)} /></motion.div> : null}</AnimatePresence>
 
-      <div className="preview-layout">
-        <div className="preview-panel"><div className="panel-bar"><span><i /> <i /> <i /></span><code>blame.svg?repo={repository}</code><span className="panel-label">SVG PREVIEW</span></div><div className="preview-image">{state.status === "loading" ? <div className="skeleton" aria-label="Loading leaderboard" /> : <img key={imagePath} src={imagePath} alt={`Git Happens leaderboard for ${repository}`} />}</div></div>
-        <aside className="stats-panel">
-          <div className="aside-heading">THE CHARGE SHEET <span>↗</span></div>
+      <motion.div className="preview-layout" key={repository} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .4 }}>
+        <Card className="preview-panel"><div className="panel-bar"><span className="panel-dots"><i /><i /><i /></span><code>blame.svg?repo={repository}</code><span className="panel-label">SVG EVIDENCE</span></div><div className="preview-image">{state.status === "loading" ? <div className="skeleton" aria-label="Loading leaderboard"><GitCommitHorizontal size={36} /><span>Reading the receipts…</span></div> : <img key={imagePath} src={imagePath} alt={`Git Happens leaderboard for ${repository}`} />}</div><BorderBeam className="beam" size={95} duration={10} colorFrom="#58a6ff" colorTo="#f78166" borderWidth={1} /></Card>
+        <Card className="stats-panel">
+          <div className="aside-heading">THE CHARGE SHEET <ArrowUpRight size={18} /></div>
           <div className="stat-row"><span>Suspects identified</span><strong>{analysis ? pad(developers.length) : "—"}</strong></div>
           <div className="stat-row"><span>Commits reviewed</span><strong>{analysis ? totalCommits : "—"}</strong></div>
           <div className="stat-row"><span>Shame awarded</span><strong>{analysis ? pad(totalAwards) : "—"}</strong></div>
           <div className="aside-rule" />
           <p>{analysis ? <MetaNote analysis={analysis} /> : state.status === "loading" ? "Reading the commit history…" : "No verdict this time."}</p>
-        </aside>
-      </div>
+        </Card>
+      </motion.div>
 
       {analysis && developers.length > 0 ? <RapSheet developers={developers} /> : null}
       {analysis && developers.length === 0 ? <p className="empty-note">Only merges and bots here. Nobody to blame… yet.</p> : null}
     </section>
 
-    <section className="embed shell" aria-labelledby="embed-title"><div><div className="section-kicker">02 / TAKE IT WITH YOU</div><h2 id="embed-title">Wear your shame.</h2><p>Drop this Markdown into a README to show the live leaderboard. GitHub caches images, so updates can take a little while to appear.</p></div><div className="embed-code"><div className="embed-label">README.MD <span>MARKDOWN</span></div><div className="code-row"><code>{snippet}</code><button type="button" onClick={copy} aria-label="Copy README Markdown">{copied ? "Copied ✓" : "Copy ↗"}</button></div></div></section>
+    <section className="embed shell" aria-labelledby="embed-title"><div><div className="section-kicker"><span>02</span> / THE PUBLIC RECORD</div><h2 id="embed-title">Wear your <span>shame.</span></h2><p>Every README deserves a warning label. Copy the embed and let visitors see the verdict. GitHub caches images, so updates can lag.</p><ArrowDownRight size={30} className="embed-arrow" /></div><Card className="embed-code"><div className="embed-label">README.MD <span>MARKDOWN / IMAGE</span></div><div className="code-row"><code>{snippet}</code><Button type="button" onClick={copy} disabled={state.status !== "ready"} className="copy-button" aria-label="Copy README Markdown">{copied ? <><Check size={16} /> Copied</> : <><Copy size={16} /> Copy</>}</Button></div></Card></section>
 
-    <footer className="shell footer"><span>git<span className="brand-accent">happens</span><span className="brand-dot">.</span></span><span>Built for laughs. Based on commits, not competence.</span><span>© 2026 GIT HAPPENS</span></footer>
-  </main>;
+    <footer className="shell footer"><span className="footer-brand">git<span>happens</span>.</span><span>Built for laughs. Based on commits, not competence.</span><span>© 2026 GIT HAPPENS</span></footer>
+  </main></MotionConfig>;
 }
 
 function ErrorPanel({ error, onRetry }: { error: ApiError; onRetry: () => void }) {
@@ -156,7 +181,7 @@ function ErrorPanel({ error, onRetry }: { error: ApiError; onRetry: () => void }
   return <div className="error-panel" role="alert">
     <strong>{copy.title}</strong>
     <p>{copy.detail}{retry}</p>
-    {error.code === "GITHUB_ERROR" ? <button type="button" onClick={onRetry}>Try again</button> : null}
+    {error.code === "GITHUB_ERROR" ? <Button type="button" onClick={onRetry}>Try again <ArrowRight size={15} /></Button> : null}
   </div>;
 }
 
@@ -201,9 +226,9 @@ function RapSheet({ developers }: { developers: DeveloperProfile[] }) {
       </li>;
       })}
     </ol>
-    {developers.length > RAP_SHEET_LIMIT ? <button type="button" className="show-all" onClick={() => setShowAll(!showAll)} aria-expanded={showAll}>
+    {developers.length > RAP_SHEET_LIMIT ? <Button type="button" variant="outline" className="show-all" onClick={() => setShowAll(!showAll)} aria-expanded={showAll}>
       {showAll ? "Show top suspects only" : `Show all ${developers.length} suspects`}
-    </button> : null}
+    </Button> : null}
   </div>;
 }
 

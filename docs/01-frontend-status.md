@@ -3,6 +3,7 @@
 ## What is implemented
 
 - A Next.js 16 app with a responsive landing page and repository input.
+- Dark GitHub-inspired navy and blue styling, with shadcn/ui cards, buttons, badges, and inputs; an Aceternity spotlight, a Magic UI border beam, and Motion for React transitions. Reduced-motion settings disable decorative loops.
 - Input normalization for `owner/repo` and HTTPS `github.com/owner/repo` URLs.
 - **Live analysis** using the backend analyser (`backend/`) through a cached server-side service.
 - `GET /api/blame.svg?repo=owner/repo`: live SVG leaderboard (top 5), or an SVG error card.
@@ -26,6 +27,7 @@
 ## Verification performed
 
 - `npm run build` and `npm run typecheck` pass from `frontend/`; the backend's 48 tests pass.
+- After restoring the styling work on 14 November 2026, the frontend build and typecheck passed, and the page was checked at 1280px and 390px with no horizontal overflow. The local live request hit GitHub's rate limit, so the page showed its error state.
 - Production server (`next start`) tested with real repositories: live SVG, cache hit on a repeat request
   regardless of capitals, JSON endpoint, not-found card (SVG 200 / JSON 404), invalid input (400),
   rate limit (SVG card with reset time / JSON 429).
