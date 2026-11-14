@@ -48,7 +48,7 @@ function frame(t: Tokens, o: { id: string; title: string; subtitle: string; heig
   <title id="gh-${o.id}-t">${escapeXml(o.label)}</title>
   <rect width="${W}" height="${o.height}" rx="22" fill="${t.surface}"/>
   <rect x="0.5" y="0.5" width="${W - 1}" height="${o.height - 1}" rx="21.5" fill="none" stroke="${t.border}"/>
-  <text x="28" y="54" fill="${t.brand}" font-size="13" font-weight="800" letter-spacing="3">GIT HAPPENS</text>
+  <text x="28" y="54" fill="${t.brand}" font-size="13" font-weight="800" letter-spacing="3">GIT EXPOSED</text>
   <text x="28" y="92" fill="${t.text}" font-size="27" font-weight="800">${escapeXml(o.title)}</text>
   <text x="28" y="120" fill="${t.secondary}" font-size="14">${escapeXml(o.subtitle)}</text>
   ${o.body}

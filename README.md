@@ -1,4 +1,4 @@
-# Git Happens — 10-Hour Hackathon Execution Plan
+# Git Exposed — 10-Hour Hackathon Execution Plan
 
 ## Frontend status
 
@@ -114,7 +114,7 @@ The live integration now uses `analyseRepository(owner, repo)`. The mock fixture
 ## README integration
 
 ```md
-![Git Happens Leaderboard](https://YOUR-DOMAIN/api/blame.svg?repo=OWNER/REPO)
+![Git Exposed Leaderboard](https://YOUR-DOMAIN/api/blame.svg?repo=OWNER/REPO)
 ```
 
 GitHub may cache proxied README images, so changes might not appear immediately. Avoid performing a full repository scan on every image request.

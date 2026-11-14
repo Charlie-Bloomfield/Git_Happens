@@ -160,7 +160,7 @@ const WIDE: ChartId[] = ["score-breakdown", "heatmap"];
 
 export function chartSnippet(origin: string, repository: string, id: ChartId, theme: EmbedTheme): string {
   const base = `${origin}/api/charts/${id}.svg?repo=${encodeURIComponent(repository)}`;
-  const alt = `Git Happens · ${CHARTS[id].title}`;
+  const alt = `Git Exposed · ${CHARTS[id].title}`;
   if (theme === "auto") {
     return `<picture>\n  <source media="(prefers-color-scheme: dark)" srcset="${base}">\n  <img alt="${alt}" src="${base}&theme=light">\n</picture>`;
   }
