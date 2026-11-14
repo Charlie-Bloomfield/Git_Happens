@@ -1,4 +1,16 @@
+# Planning docs kept local
+/Git_Happens_10_Hour_Execution_Plan.md
+/Git_Happens_Hackathon_Project_Report.md
+
+# Dependencies and build output
 node_modules/
-.env
-.env.local
+/frontend/.next/
+/frontend/out/
+*.tsbuildinfo
+
+# Secrets
+.env*
+!.env.example
+
+# OS
 .DS_Store

@@ -1,5 +1,25 @@
 # Git Happens — 10-Hour Hackathon Execution Plan
 
+## Frontend status
+
+The Next.js frontend is in `frontend/`, the canonical data contract is in `shared/`, and future backend code can live in `backend/`. The current UI and SVG use clearly labelled demo data while Charlie's GitHub analyser is developed.
+
+```sh
+cd frontend
+npm ci
+npm run dev
+```
+
+Open `http://localhost:3000`. Enter `owner/repo` or an HTTPS GitHub repository URL to preview the demo card and copy its README Markdown. The copied localhost URL will only work locally; deploy the app before embedding it in a public README.
+
+Documentation:
+
+- [Frontend status](docs/01-frontend-status.md) — completed work and limitations.
+- [Frontend architecture](docs/02-frontend-architecture.md) — layout, data flow, and shared contract.
+- [Running and integration](docs/03-running-and-integration.md) — commands, API behavior, and live analyser handoff.
+
+Current status: the form, SVG renderer, endpoint, and copy interaction work with demo data. GitHub fetching, scoring, caching of analysis results, and deployment remain to be integrated.
+
 **Team:** You and Charlie  
 **Theme:** Hate the User  
 **Goal:** Deploy a service that analyses a public GitHub repository, ranks contributors by questionable coding habits, awards humorous achievements, and generates an SVG leaderboard embeddable in a GitHub README.
@@ -31,7 +51,7 @@
 
 ## Shared contract — agree in hour 1
 
-Create `src/types/analysis.ts`:
+Create `shared/analysis.ts`:
 
 ```ts
 export interface DeveloperStats {
