@@ -58,5 +58,13 @@ The frontend imports the analyser from `../backend` (alias `@backend/*`) and the
 2. ~~Live SVG route + cache~~ Done.
 3. ~~JSON endpoint~~ Done: `/api/analysis`.
 4. ~~Landing page on live data with loading/error states~~ Done, plus the rap sheet with evidence links and `?repo=` share links.
-5. Deploy to a public HTTPS domain and paste the generated Markdown into a GitHub README. GitHub may cache the
-   image, so a README refresh may lag behind fresh analysis.
+5. ~~Deploy and test the README embed~~ Done: live at https://git-happens-peach.vercel.app, and the embed works on github.com.
+
+## Production
+
+- URL: https://git-happens-peach.vercel.app
+- README embed: `![Git Happens](https://git-happens-peach.vercel.app/api/blame.svg?repo=OWNER/REPO)`
+- Vercel project `git-happens`: root directory `frontend`, install command `npm run install:all`, `GITHUB_TOKEN` set for Production.
+- Redeploy from the repo root with `npx vercel deploy --prod`. The project isn't connected to GitHub yet, so pushes don't deploy
+  automatically; install the Vercel GitHub app on the repo and run `vercel git connect` to enable that.
+- `.vercelignore` keeps `node_modules`, build output and `.env*` out of CLI uploads.

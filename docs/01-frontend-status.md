@@ -22,7 +22,6 @@
 - Without `GITHUB_TOKEN`, GitHub allows 60 requests/hour per IP (about 4–5 uncached analyses). Set a token for the demo.
 - `largeCommits` / `linesChanged` only cover commits in the line-stats sample. The rap sheet shows "—" when a
   developer has no sampled commits.
-- The README embed hasn't been tested on github.com yet; that needs a public HTTPS deployment.
 
 ## Verification performed
 
@@ -32,5 +31,7 @@
   rate limit (SVG card with reset time / JSON 429).
 - Screenshots checked at desktop width and ~600px mobile width; no horizontal overflow.
 - The client bundle contains no Octokit or `GITHUB_TOKEN` code.
+- Deployed to production at https://git-happens-peach.vercel.app with `GITHUB_TOKEN` set (line stats cover 100 commits).
+- README embed confirmed working on github.com.
 
 See [Running and integration](./03-running-and-integration.md).
