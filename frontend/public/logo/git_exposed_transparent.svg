@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="378 235 768 385" width="768" height="385" role="img" aria-label="ASCII shrugging coder with angle brackets and generic branch symbol">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="378 210 768 410" width="768" height="410" role="img" aria-label="ASCII shrugging coder with angle brackets and generic branch symbol">
 <title>Code shrug logo</title>
 <desc>Transparent vector tracing of a pixel-art shrugging coder, coding brackets and generic version-control branching icon.</desc>
 <defs>
@@ -6,6 +6,21 @@
     <feGaussianBlur stdDeviation="17" />
   </filter>
 </defs>
+<style>
+  .code-symbol { animation: code-float 1.9s ease-in-out infinite; }
+  .branch-symbol { animation: branch-float 2.2s ease-in-out infinite; }
+  @keyframes code-float {
+    0%, 100% { transform: translateY(16px); }
+    50% { transform: translateY(-40px); }
+  }
+  @keyframes branch-float {
+    0%, 100% { transform: translateY(18px); }
+    50% { transform: translateY(-38px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .code-symbol, .branch-symbol { animation: none; }
+  }
+</style>
 <g opacity="0.32" filter="url(#soft-glow)">
   <path fill="#ffffff" d="M850 515 L849 576 L864 577 L865 516 Z " />
   <path fill="#ffffff" d="M671 515 L670 576 L685 577 L686 516 Z " />
@@ -25,10 +40,14 @@
   <path fill="#ffffff" d="M833 331 L832 354 L848 354 L848 332 Z " />
   <path fill="#ffffff" d="M687 332 L687 354 L703 354 L703 332 Z " />
   <path fill="#ffffff" d="M710 308 L710 324 L825 324 L825 308 Z " />
+  <g class="code-symbol">
   <path fill="#b9b9be" d="M530 296 L529 309 L559 330 L528 350 L529 363 L572 335 L572 324 Z " />
   <path fill="#b9b9be" d="M447 296 L404 325 L404 335 L448 363 L448 350 L417 330 L448 310 Z " />
   <path fill="#b9b9be" d="M512 282 L500 283 L466 375 L478 374 Z " />
+  </g>
+  <g class="branch-symbol">
   <path fill="#b9b9be" d="M1040 264 L1030 265 L1025 268 L1020 274 L1018 281 L1019 289 L1022 294 L1032 301 L1032 359 L1022 366 L1018 375 L1018 380 L1020 386 L1025 392 L1036 396 L1047 393 L1054 384 L1054 370 L1043 359 L1057 344 L1073 333 L1089 325 L1100 330 L1110 329 L1118 323 L1121 317 L1121 307 L1119 302 L1111 295 L1098 294 L1091 298 L1087 303 L1085 316 L1056 333 L1043 345 L1042 300 L1048 297 L1054 290 L1055 278 L1053 273 L1047 267 Z M1034 368 L1040 368 L1046 374 L1045 383 L1037 388 L1031 386 L1027 381 L1028 373 Z M1101 302 L1108 303 L1113 309 L1112 317 L1105 322 L1099 321 L1093 313 L1094 308 Z M1036 272 L1042 274 L1047 283 L1045 288 L1040 292 L1033 292 L1027 286 L1029 276 Z" />
+  </g>
 </g>
 <g>
   <path fill="#ffffff" d="M850 515 L849 576 L864 577 L865 516 Z " />
@@ -49,9 +68,13 @@
   <path fill="#ffffff" d="M833 331 L832 354 L848 354 L848 332 Z " />
   <path fill="#ffffff" d="M687 332 L687 354 L703 354 L703 332 Z " />
   <path fill="#ffffff" d="M710 308 L710 324 L825 324 L825 308 Z " />
+  <g class="code-symbol">
   <path fill="#b9b9be" d="M530 296 L529 309 L559 330 L528 350 L529 363 L572 335 L572 324 Z " />
   <path fill="#b9b9be" d="M447 296 L404 325 L404 335 L448 363 L448 350 L417 330 L448 310 Z " />
   <path fill="#b9b9be" d="M512 282 L500 283 L466 375 L478 374 Z " />
+  </g>
+  <g class="branch-symbol">
   <path fill="#b9b9be" d="M1040 264 L1030 265 L1025 268 L1020 274 L1018 281 L1019 289 L1022 294 L1032 301 L1032 359 L1022 366 L1018 375 L1018 380 L1020 386 L1025 392 L1036 396 L1047 393 L1054 384 L1054 370 L1043 359 L1057 344 L1073 333 L1089 325 L1100 330 L1110 329 L1118 323 L1121 317 L1121 307 L1119 302 L1111 295 L1098 294 L1091 298 L1087 303 L1085 316 L1056 333 L1043 345 L1042 300 L1048 297 L1054 290 L1055 278 L1053 273 L1047 267 Z M1034 368 L1040 368 L1046 374 L1045 383 L1037 388 L1031 386 L1027 381 L1028 373 Z M1101 302 L1108 303 L1113 309 L1112 317 L1105 322 L1099 321 L1093 313 L1094 308 Z M1036 272 L1042 274 L1047 283 L1045 288 L1040 292 L1033 292 L1027 286 L1029 276 Z" />
+  </g>
 </g>
 </svg>
