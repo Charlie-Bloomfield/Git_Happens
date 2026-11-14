@@ -36,7 +36,6 @@ export function generateLeaderboardSVG(analysis: RepositoryAnalysis, options: { 
     ${options.demo ? `<rect x="608" y="30" width="124" height="30" rx="15" fill="#5b2825"/>
     <text x="670" y="50" text-anchor="middle" fill="#ffb0a8" font-size="12" font-weight="800">DEMO DATA</text>` : ""}
     ${rows}
-    <text x="28" y="${height - 23}" fill="#7c8897" font-size="12">Your commits. Our judgement. · Entertainment only</text>
   </svg>`;
 }
 
@@ -62,6 +61,5 @@ export function generateErrorSVG(repository: string, code: string, retryAt?: str
     <text x="28" y="98" fill="#e6edf3" font-size="27" font-weight="800">${escapeXml(copy.title)}</text>
     <text x="28" y="130" fill="#ff9b91" font-size="15">${escapeXml(copy.detail + retry)}</text>
     <text x="28" y="158" fill="#7c8897" font-size="13">${escapeXml(repository)}</text>
-    <text x="28" y="${height - 23}" fill="#7c8897" font-size="12">Your commits. Our judgement. · Entertainment only</text>
   </svg>`;
 }

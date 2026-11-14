@@ -121,8 +121,6 @@ main { overflow: hidden; background: radial-gradient(circle at 82% 5%, #171f29 0
 .aside-heading { display: flex; align-items: center; justify-content: space-between; color: #58a6ff; font: 500 10px "DM Mono", monospace; letter-spacing: 1.5px; margin-bottom: 18px; }
 .stat-row { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid #2a323c; color: #8c96a2; font-size: 12px; }
 .stat-row strong { color: #eaeff5; font: 700 27px "Space Grotesk", sans-serif; }
-.aside-rule { height: 1px; background: #2a323c; margin: 31px 0 20px; }
-.stats-panel p { color: #818b96; font-size: 12px; line-height: 1.7; margin: 0; }
 .empty-note { color: #818b96; }
 
 .rap-sheet { margin-top: 51px; }
@@ -285,7 +283,7 @@ main { overflow: hidden; background: radial-gradient(circle at 82% 5%, #171f29 0
   .hero-visual { display: none; } .hero-copy { max-width: 690px; }
   .preview-layout { grid-template-columns: 1fr; }
   .stats-panel { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 18px; }
-  .aside-heading, .aside-rule, .stats-panel p { grid-column: 1 / -1; }
+  .aside-heading { grid-column: 1 / -1; }
 }
 @media (max-width: 620px) {
   .shell { width: min(100% - 32px, 1230px); }

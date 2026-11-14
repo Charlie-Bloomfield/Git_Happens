@@ -27,7 +27,6 @@ const ERROR_COPY: Record<string, { title: string; detail: string }> = {
   GITHUB_ERROR: { title: "GitHub happened.", detail: "We couldn't reach GitHub. Try again in a minute." },
 };
 
-const plural = (count: number, word: string) => `${count} ${word}${count === 1 ? "" : "s"}`;
 const pad = (value: number) => value.toString().padStart(2, "0");
 
 export default function Home() {
@@ -181,8 +180,6 @@ export default function Home() {
           <div className="stat-row"><span>Suspects identified</span><strong>{analysis ? pad(developers.length) : "—"}</strong></div>
           <div className="stat-row"><span>Commits reviewed</span><strong>{analysis ? totalCommits : "—"}</strong></div>
           <div className="stat-row"><span>Shame awarded</span><strong>{analysis ? pad(totalAwards) : "—"}</strong></div>
-          <div className="aside-rule" />
-          <p>{analysis ? <MetaNote analysis={analysis} /> : state.status === "loading" ? "Reading the commit history…" : "No verdict this time."}</p>
         </Card>
       </motion.div>
 
@@ -216,16 +213,6 @@ function ErrorPanel({ error, onRetry }: { error: ApiError; onRetry: () => void }
     <p>{copy.detail}{retry}</p>
     {error.code === "GITHUB_ERROR" ? <Button type="button" onClick={onRetry}>Try again <ArrowRight size={15} /></Button> : null}
   </div>;
-}
-
-function MetaNote({ analysis }: { analysis: DetailedRepositoryAnalysis }) {
-  const { meta } = analysis;
-  const skipped = meta.mergeCommitsSkipped + meta.botCommitsSkipped;
-  return <>
-    {meta.truncated ? `Latest ${meta.commitsAnalysed + skipped} commits only. ` : ""}
-    {skipped ? `Skipped ${plural(meta.mergeCommitsSkipped, "merge")} and ${plural(meta.botCommitsSkipped, "bot commit")}. ` : ""}
-    Line stats cover the newest {meta.commitsWithLineStats} commits. Late-night means 00:00–05:00 {meta.timeZone}.
-  </>;
 }
 
 const RAP_SHEET_LIMIT = 12;
