@@ -22,6 +22,8 @@ Replace `OWNER/REPO` in any snippet with a public GitHub repository. The preview
 ![Git Exposed leaderboard](https://git-happens-peach.vercel.app/api/blame.svg?repo=OWNER/REPO)
 ```
 
+- Ranks the top five contributors by blame score, with their leading achievement and commit stats.
+
 ### Score breakdown
 
 ![Git Exposed score breakdown](https://git-happens-peach.vercel.app/api/charts/score-breakdown.svg?repo=Charlie-Bloomfield/Git_Happens)
@@ -29,6 +31,8 @@ Replace `OWNER/REPO` in any snippet with a public GitHub repository. The preview
 ```md
 ![Git Exposed score breakdown](https://git-happens-peach.vercel.app/api/charts/score-breakdown.svg?repo=OWNER/REPO)
 ```
+
+- Shows which commit habits contribute to each person's blame score.
 
 ### Anatomy of shame
 
@@ -38,6 +42,8 @@ Replace `OWNER/REPO` in any snippet with a public GitHub repository. The preview
 ![Git Exposed anatomy of shame](https://git-happens-peach.vercel.app/api/charts/shame-mix.svg?repo=OWNER/REPO)
 ```
 
+- Shows how much each habit adds to the repository's total shame points.
+
 ### Commit share
 
 ![Git Exposed commit share](https://git-happens-peach.vercel.app/api/charts/commit-share.svg?repo=Charlie-Bloomfield/Git_Happens)
@@ -45,6 +51,8 @@ Replace `OWNER/REPO` in any snippet with a public GitHub repository. The preview
 ```md
 ![Git Exposed commit share](https://git-happens-peach.vercel.app/api/charts/commit-share.svg?repo=OWNER/REPO)
 ```
+
+- Shows how the analysed commits are split among contributors.
 
 ### Crime-time heatmap
 
@@ -54,6 +62,8 @@ Replace `OWNER/REPO` in any snippet with a public GitHub repository. The preview
 ![Git Exposed crime-time heatmap](https://git-happens-peach.vercel.app/api/charts/heatmap.svg?repo=OWNER/REPO)
 ```
 
+- Maps commits by weekday and hour, highlighting late-night and Friday activity.
+
 ### Charges filed
 
 ![Git Exposed charges filed](https://git-happens-peach.vercel.app/api/charts/awards.svg?repo=Charlie-Bloomfield/Git_Happens)
@@ -61,6 +71,8 @@ Replace `OWNER/REPO` in any snippet with a public GitHub repository. The preview
 ```md
 ![Git Exposed charges filed](https://git-happens-peach.vercel.app/api/charts/awards.svg?repo=OWNER/REPO)
 ```
+
+- Counts how many contributors earned each achievement.
 
 ## Make it yours
 
