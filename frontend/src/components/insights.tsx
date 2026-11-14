@@ -99,21 +99,22 @@ export function ScoreExplainer({ developers, selected, onSelect }: { developers:
   return <section className="explainer shell" id="score-maths" aria-labelledby="explainer-title">
     <div className="section-kicker"><span>02</span> / THE MATHS</div>
     <h2 id="explainer-title">How the score <span>works.</span></h2>
-    <p className="explainer-lede">Every suspect gets a blame score from 0 to 100. It measures how <em>concentrated</em> their bad habits are, not how much they commit.</p>
+    <p className="explainer-lede">0 to 100. How <em>concentrated</em> the bad habits are, not how much you commit.</p>
 
     <div className="explainer-grid">
       <ol className="formula-steps">
         <li>
           <span className="step-no">1</span>
-          <div><h3>Count the sins</h3><p>Four signals carry weight. Everything else (weekends, Fridays) is a tag only.</p>
+          <div><h3>Count the sins</h3>
             <div className="signal-cards">{SIGNALS.map((s, i) => <div key={s.key} className="signal-card" style={{ ["--c" as string]: `var(--sig-${i})` }}>
               <div className="signal-head"><i /> {s.label}<b>×{s.weight}</b></div><p>{s.description}</p>
             </div>)}</div>
           </div>
         </li>
-        <li><span className="step-no">2</span><div><h3>Add up shame points</h3><p><code>3·reverts + 2·large + 1·late-night + 1·suspicious</code></p></div></li>
-        <li><span className="step-no">3</span><div><h3>Normalise by volume</h3><p>Divide by <code>{pointsForMaxPerCommit} × (commits + {priorCommits})</code>. Prolific developers aren&apos;t punished for doing more work, and the <code>+ {priorCommits}</code> stops one unlucky commit from topping the board.</p></div></li>
-        <li><span className="step-no">4</span><div><h3>Scale to 100</h3><p>Multiply by 100, round, cap at 100. Averaging {pointsForMaxPerCommit} shame points per commit over a long history maxes you out.</p></div></li>
+        <li><span className="step-no">2</span><div><h3>Normalise and cap</h3>
+          <p><code>min(100, 100 × points ÷ {pointsForMaxPerCommit}·(commits + {priorCommits}))</code></p>
+          <p className="formula-foot">The <code>+ {priorCommits}</code> stops one bad commit topping the board.</p>
+        </div></li>
       </ol>
 
       <div className="worked-example">
@@ -141,9 +142,9 @@ export function ScoreExplainer({ developers, selected, onSelect }: { developers:
         </div>
         <ScoreMeter developer={developer} />
         <p className="worked-note">
-          {b.capped ? "Capped at 100. Remarkable work. " : ""}
-          {noLineStats ? "None of their commits were in the line-stats sample, so large commits can't be detected for them. " : ""}
-          {developer.achievements.filter((a) => TAGS_ONLY.includes(a)).length ? `${developer.achievements.filter((a) => TAGS_ONLY.includes(a)).join(" and ")}: tag only, no score impact.` : ""}
+          {b.capped ? "Capped at 100. " : ""}
+          {noLineStats ? "No line stats, so large commits not counted. " : ""}
+          {developer.achievements.filter((a) => TAGS_ONLY.includes(a)).length ? `${developer.achievements.filter((a) => TAGS_ONLY.includes(a)).join(" and ")}: tag only.` : ""}
         </p>
       </div>
     </div>

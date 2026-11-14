@@ -15,10 +15,10 @@ export interface Signal {
 
 /** Fixed order = fixed colour slot in every chart. Never reorder by value. */
 export const SIGNALS: readonly Signal[] = [
-  { key: "reverts", label: "Reverts", short: "revert", weight: SCORE_WEIGHTS.revert, description: "Commits that undo other commits. The costliest sin: someone shipped something that had to come back out." },
-  { key: "largeCommits", label: "Large commits", short: "large", weight: SCORE_WEIGHTS.largeCommit, description: "500+ changed lines or 25+ files in one go. Good luck reviewing that." },
-  { key: "lateNightCommits", label: "Late-night commits", short: "late-night", weight: SCORE_WEIGHTS.lateNightCommit, description: "Authored between 00:00 and 05:00. Nothing good is committed after midnight." },
-  { key: "suspiciousMessages", label: "Suspicious messages", short: "suspicious", weight: SCORE_WEIGHTS.suspiciousMessage, description: "Messages like \"fix\", \"wip\", \"asdf\" or anything under four characters." },
+  { key: "reverts", label: "Reverts", short: "revert", weight: SCORE_WEIGHTS.revert, description: "Undoes another commit." },
+  { key: "largeCommits", label: "Large commits", short: "large", weight: SCORE_WEIGHTS.largeCommit, description: "500+ lines or 25+ files." },
+  { key: "lateNightCommits", label: "Late-night commits", short: "late-night", weight: SCORE_WEIGHTS.lateNightCommit, description: "Between 00:00 and 05:00." },
+  { key: "suspiciousMessages", label: "Suspicious messages", short: "suspicious", weight: SCORE_WEIGHTS.suspiciousMessage, description: "\"fix\", \"wip\" or under 4 chars." },
 ];
 
 export const SCORE_CONSTANTS = {
