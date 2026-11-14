@@ -59,6 +59,17 @@ main { overflow: hidden; background: radial-gradient(circle at 82% 5%, #171f29 0
 .query-row [data-slot="input"] { flex: 1; min-width: 0; height: 51px; padding: 0 8px; border: 0; border-radius: 0; background: transparent; box-shadow: none; color: #e6edf3; font-size: 15px; }
 .query-row [data-slot="input"]:focus-visible { border: 0; box-shadow: none; outline: none; }
 .query-row [data-slot="input"]::placeholder { color: #636b75; }
+/* Terminal-style blinking block cursor, shown while the field is empty */
+.query-field { position: relative; flex: 1; min-width: 0; display: flex; }
+.query-row [data-slot="input"] { caret-color: #58a6ff; }
+.query-field.is-empty [data-slot="input"] { caret-color: transparent; }
+.query-field.is-empty [data-slot="input"]::placeholder { color: transparent; }
+.query-prompt { display: none; position: absolute; inset: 0; align-items: center; gap: 3px; padding: 0 8px; color: #636b75; font-size: 15px; pointer-events: none; white-space: nowrap; overflow: hidden; }
+.query-field.is-empty .query-prompt { display: flex; }
+.query-cursor { flex: none; width: 9px; height: 20px; background: #58a6ff; box-shadow: 0 0 10px #58a6ff80; animation: cursor-blink 1.06s steps(1, end) infinite; }
+.query-field:focus-within .query-cursor { animation-duration: .8s; }
+@keyframes cursor-blink { 50% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .query-cursor { animation: none; } }
 .judge-button[data-slot="button"] { flex: none; height: 48px; padding: 0 17px; border-radius: 8px; background: #58a6ff; color: #081525; font-size: 13px; font-weight: 700; box-shadow: 0 5px 20px #58a6ff24; }
 .judge-button[data-slot="button"]:hover { background: #79b8ff; }
 .judge-arrow { display: inline-flex; position: relative; top: 2px; margin-left: 7px; }
@@ -206,7 +217,7 @@ main { overflow: hidden; background: radial-gradient(circle at 82% 5%, #171f29 0
 .explainer { padding: 80px 0 90px; border-top: 1px solid #26364a; scroll-margin-top: 20px; }
 .explainer h2, .evidence-board h2 { margin: 0 0 10px; font-size: clamp(42px, 4.5vw, 61px); line-height: 1.06; letter-spacing: -3.7px; font-weight: 700; }
 .explainer h2 span, .evidence-board h2 span { color: #58a6ff; }
-.explainer-lede { max-width: 620px; margin: 0 0 40px; color: #8d96a1; font-size: 15px; line-height: 1.7; }
+.explainer-lede { max-width: 620px; margin: 0 0 32px; color: #8d96a1; font-size: 15px; line-height: 1.7; }
 .explainer-lede em { color: #e6edf3; font-style: normal; font-weight: 600; }
 .explainer-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: 28px; align-items: start; }
 .formula-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 22px; }
@@ -215,6 +226,7 @@ main { overflow: hidden; background: radial-gradient(circle at 82% 5%, #171f29 0
 .step-no { flex: none; width: 30px; height: 30px; display: grid; place-items: center; border: 1px solid #3b6aa1; border-radius: 50%; color: #58a6ff; font: 500 12px "DM Mono", monospace; }
 .formula-steps h3 { margin: 4px 0 4px; font-size: 17px; }
 .formula-steps p { margin: 0; color: #8d96a1; font-size: 13.5px; line-height: 1.65; }
+.formula-steps .formula-foot { margin-top: 6px; font-size: 12px; }
 .formula-steps code, .worked-note code { padding: 1px 5px; border-radius: 4px; background: #1b2430; color: #cfe2f7; font: 12px "DM Mono", monospace; }
 .formula-steps code { overflow-wrap: anywhere; }
 .signal-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
@@ -222,7 +234,7 @@ main { overflow: hidden; background: radial-gradient(circle at 82% 5%, #171f29 0
 .signal-head { display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 700; }
 .signal-head i { width: 9px; height: 9px; border-radius: 3px; background: var(--c); }
 .signal-head b { margin-left: auto; color: #e6edf3; font: 500 12px "DM Mono", monospace; }
-.signal-card p { margin-top: 6px; font-size: 12px; line-height: 1.55; }
+.signal-card p { margin-top: 4px; font-size: 12px; line-height: 1.45; }
 .worked-example { padding: 22px; border: 1px solid #323b45; border-radius: 12px; background: #161b22; }
 .worked-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
 .worked-top .aside-heading { margin: 0; }
@@ -298,7 +310,7 @@ main { overflow: hidden; background: radial-gradient(circle at 82% 5%, #171f29 0
   .hero { padding-block: 68px 72px; }
   .hero h1 { font-size: clamp(36px, 10vw, 48px); line-height: 1.08; letter-spacing: -3px; }
   .query-card { padding: 16px; } .query-row { flex-wrap: wrap; }
-  .query-row [data-slot="input"] { min-width: calc(100% - 33px); }
+  .query-field { min-width: calc(100% - 33px); }
   .judge-button[data-slot="button"] { width: 100%; margin-top: 4px; }
   .process-inner { justify-content: space-between; gap: 5px; min-height: 58px; font-size: 8px; letter-spacing: .4px; }
   .process-inner span { gap: 4px; } .process-inner svg { width: 11px; }
