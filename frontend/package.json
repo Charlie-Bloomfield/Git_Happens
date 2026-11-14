@@ -4,6 +4,7 @@
   "description": "**Team:** You and Charlie   **Theme:** Hate the User   **Goal:** Deploy a service that analyses a public GitHub repository, ranks contributors by questionable coding habits, awards humorous achievements, and generates an SVG leaderboard embeddable in a GitHub README.",
   "private": true,
   "scripts": {
+    "install:all": "npm ci && npm ci --prefix ../backend",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
