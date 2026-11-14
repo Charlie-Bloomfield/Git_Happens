@@ -84,7 +84,7 @@ export default function Home() {
     event.preventDefault();
     const parsed = parseRepository(input);
     if (!parsed) {
-      setFormError("Enter owner/repo or a public https://github.com/owner/repo URL.");
+      setFormError("That's not a repo. It's owner/repo. Everyone else manages it.");
       return;
     }
     if (parsed === repository) setAttempt((count) => count + 1);
@@ -137,9 +137,9 @@ export default function Home() {
       <motion.div className="hero-copy" initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .55 }}>
         <h1>The Git history{" "}<br /><em>roast engine</em></h1>
         <Card className="query-card"><form onSubmit={submit} className="repo-form">
-          <label htmlFor="repository">ENTER THE SCENE OF THE CRIME</label>
-          <div className="query-row"><span className="query-icon" aria-hidden="true"><Search size={19} /></span><span className={`query-field${input ? "" : " is-empty"}`}><Input id="repository" value={input} onChange={(event) => setInput(event.target.value)} placeholder="owner/repository" autoComplete="off" spellCheck={false} aria-invalid={Boolean(formError)} /><span className="query-prompt" aria-hidden="true"><span className="query-cursor" />owner/repository</span></span><Button type="submit" size="lg" className="judge-button" disabled={state.status === "loading"} onPointerEnter={(event) => { if (event.pointerType === "mouse") setArrowHovered(true); }} onPointerLeave={() => setArrowHovered(false)}>Judge this repo <motion.span key={arrowLaunching ? "launch" : "idle"} className="judge-arrow" aria-hidden="true" initial={{ x: 0, y: 0, opacity: 1 }} animate={arrowLaunching ? { x: [0, 4, 32], y: [0, -8, 0], opacity: [1, 1, 0] } : arrowHopping ? { x: 0, y: [0, -10, 0], opacity: 1 } : { x: 0, y: 0, opacity: 1 }} transition={arrowLaunching ? { duration: .42, ease: "easeIn", times: [0, .25, 1] } : arrowHopping ? { duration: .7, ease: "easeInOut" } : { duration: .15 }}><ArrowRight size={18} /></motion.span></Button></div>
-          {formError ? <p className="form-error" role="alert">{formError}</p> : <p className="form-hint">Public GitHub repositories only <span>·</span> URLs work too</p>}
+          <label htmlFor="repository">HAND OVER THE REPO</label>
+          <div className="query-row"><span className="query-icon" aria-hidden="true"><Search size={19} /></span><span className={`query-field${input ? "" : " is-empty"}`}><Input id="repository" value={input} onChange={(event) => setInput(event.target.value)} placeholder="owner/repository" autoComplete="off" spellCheck={false} aria-invalid={Boolean(formError)} /><span className="query-prompt" aria-hidden="true"><span className="query-cursor" />owner/repository</span></span><Button type="submit" size="lg" className="judge-button" disabled={state.status === "loading"} onPointerEnter={(event) => { if (event.pointerType === "mouse") setArrowHovered(true); }} onPointerLeave={() => setArrowHovered(false)}>Roast me <motion.span key={arrowLaunching ? "launch" : "idle"} className="judge-arrow" aria-hidden="true" initial={{ x: 0, y: 0, opacity: 1 }} animate={arrowLaunching ? { x: [0, 4, 32], y: [0, -8, 0], opacity: [1, 1, 0] } : arrowHopping ? { x: 0, y: [0, -10, 0], opacity: 1 } : { x: 0, y: 0, opacity: 1 }} transition={arrowLaunching ? { duration: .42, ease: "easeIn", times: [0, .25, 1] } : arrowHopping ? { duration: .7, ease: "easeInOut" } : { duration: .15 }}><ArrowRight size={18} /></motion.span></Button></div>
+          {formError ? <p className="form-error" role="alert">{formError}</p> : <p className="form-hint">Public repos only. We can't judge what you're hiding.</p>}
         </form></Card>
       </motion.div>
       <motion.div className="hero-visual" initial={{ opacity: 0, x: 25 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: .6, delay: .1 }} aria-hidden="true">
