@@ -126,7 +126,7 @@ export default function Home() {
   return <MotionConfig reducedMotion="user"><main>
     <header className="site-header shell">
       <a className="brand" href="#top" aria-label="Git Exposed home">
-        <img className="brand-image" src="/logo/git_exposed_transparent.svg" alt="" />
+        <img className="brand-image" src="/logo/git_exposed_transparent.svg?v=animated" alt="" />
         <span className="brand-name">git<span>exposed</span></span>
       </a>
       <a className="header-link" href="https://github.com/Charlie-Bloomfield/Git_Happens" target="_blank" rel="noreferrer"><GitBranch size={17} /> <span>Source code</span> <ArrowUpRight size={16} /></a>
@@ -202,7 +202,7 @@ export default function Home() {
     {analysis && developers.length > 0 ? <ScoreExplainer developers={developers} selected={explained} onSelect={setExplained} /> : null}
     {analysis && developers.length > 0 ? <EvidenceBoard analysis={analysis} origin={origin} /> : null}
 
-    <footer className="shell footer"><span className="footer-brand"><img className="footer-brand-image" src="/logo/git_exposed_transparent.svg" alt="Git Exposed" /></span><span>Built for laughs. Based on commits, not competence.</span><span>© 2026 GIT EXPOSED</span></footer>
+    <footer className="shell footer"><span className="footer-brand"><img className="footer-brand-image" src="/logo/git_exposed_transparent.svg?v=animated" alt="Git Exposed" /></span><span>Built for laughs. Based on commits, not competence.</span><span>© 2026 GIT EXPOSED</span></footer>
   </main></MotionConfig>;
 }
 
