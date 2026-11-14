@@ -1,25 +1,37 @@
 # Frontend status
 
-## Implemented
+## What is implemented
 
-- A responsive Next.js landing page with GitHub repository input, a clearly labelled initial demo, live loading and error states, and an automatic scroll to the verdict after submission.
-- `GET /api/analysis?repo=owner/repo`, which calls the backend analyser and returns real `RepositoryAnalysis` JSON.
-- `GET /api/blame.svg?repo=owner/repo`, which renders up to five ranked contributors from the same analyser for the on-page preview and README image. `demo=1` is reserved for the initial sample preview.
-- Validation for `owner/repo` and HTTPS GitHub URLs, plus mapped errors for missing, private, empty, and rate-limited repositories.
-- An in-memory, per-instance analysis cache with a 15-minute TTL and request deduplication, plus short HTTP caching for SVG responses.
-- A copyable README Markdown embed after a successful live analysis. The SVG renderer XML-escapes text from GitHub.
+- A Next.js 16 app with a responsive landing page and repository input.
+- Input normalization for `owner/repo` and HTTPS `github.com/owner/repo` URLs.
+- **Live analysis** using the backend analyser (`backend/`) through a cached server-side service.
+- `GET /api/blame.svg?repo=owner/repo`: live SVG leaderboard (top 5), or an SVG error card.
+- `GET /api/analysis?repo=owner/repo`: JSON analysis with links to the commits behind each stat, for the page.
+- Landing page:
+  - fetches `/api/analysis`, with loading (skeleton + "JUDGING…"), success and error states for each error code;
+  - live "charge sheet" totals, with notes on what was analysed (merges/bots skipped, line-stats coverage, time zone);
+  - **rap sheet**: every suspect's stats, achievements (hover shows the criteria) and links to the evidence commits;
+    top 12 shown, with a "show all" toggle;
+  - shareable links: `/?repo=owner/repo` opens straight to that verdict;
+  - copyable README image snippet.
+- The SVG renderer escapes all text for XML, uses a sans-serif font stack and correct singular/plural wording.
 
-## Verified
+## Current limitations
 
-- `npm run build` passed from the repository root on 14 November 2026.
-- Frontend and backend type checks passed, and all 48 backend tests passed.
-- A live request for `Charlie-Bloomfield/Git_Happens` returned two contributors and eight commits; submitting the same repository in the browser displayed those numbers and a live SVG preview.
-- Invalid input returned JSON 400 and an SVG error card with HTTP 200, as intended for image embeds.
+- The in-memory analysis cache is per server instance and resets on restart/redeploy.
+- Without `GITHUB_TOKEN`, GitHub allows 60 requests/hour per IP (about 4–5 uncached analyses). Set a token for the demo.
+- `largeCommits` / `linesChanged` only cover commits in the line-stats sample. The rap sheet shows "—" when a
+  developer has no sampled commits.
 
-## Remaining work
+## Verification performed
 
-- Deploy to a public HTTPS domain and verify the image in a GitHub README. A localhost embed URL works only on the local machine.
-- The in-memory cache is local to each server instance and does not persist across restarts or deployments. For multiple instances, use a shared cache.
-- Anonymous GitHub requests are rate limited. Configure `GITHUB_TOKEN` on the server for a higher limit. The backend samples recent commits; see its integration guide for analysis limits.
+- `npm run build` and `npm run typecheck` pass from `frontend/`; the backend's 48 tests pass.
+- Production server (`next start`) tested with real repositories: live SVG, cache hit on a repeat request
+  regardless of capitals, JSON endpoint, not-found card (SVG 200 / JSON 404), invalid input (400),
+  rate limit (SVG card with reset time / JSON 429).
+- Screenshots checked at desktop width and ~600px mobile width; no horizontal overflow.
+- The client bundle contains no Octokit or `GITHUB_TOKEN` code.
+- Deployed to production at https://git-happens-peach.vercel.app with `GITHUB_TOKEN` set (line stats cover 100 commits).
+- README embed confirmed working on github.com.
 
-See [Running and integration](./03-running-and-integration.md) for setup and route behavior.
+See [Running and integration](./03-running-and-integration.md).
