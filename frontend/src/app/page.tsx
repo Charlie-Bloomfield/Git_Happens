@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, MotionConfig, motion, useReducedMotion } from "motion/react";
-import { ArrowDownRight, ArrowRight, ArrowUpRight, Check, ChevronRight, Copy, GitBranch, GitCommitHorizontal, Search, Zap } from "lucide-react";
+import { ArrowRight, ArrowUpRight, ChevronRight, GitBranch, GitCommitHorizontal, Search, Zap } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { BorderBeam } from "@/components/ui/border-beam";
@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Spotlight } from "@/components/ui/spotlight-new";
-import { AwardChip, ChargeBoard, EvidenceBoard, ScoreExplainer, ScoreMeter } from "@/components/insights";
+import { AwardChip, ChargeBoard, EmbedBar, EvidenceBoard, ScoreExplainer, ScoreMeter } from "@/components/insights";
 import type { DetailedRepositoryAnalysis, DeveloperProfile } from "@backend/analysis";
 import { parseRepository } from "@/lib/repository";
 
@@ -112,7 +112,7 @@ export default function Home() {
       setCopied(true);
       window.setTimeout(() => setCopied(false), 2000);
     } catch {
-      setFormError("Clipboard access was blocked. Select and copy the snippet below.");
+      setFormError("Clipboard access was blocked. Select the snippet and copy it yourself.");
     }
   }
 
@@ -161,7 +161,6 @@ export default function Home() {
         <div>
           <div className="section-kicker"><span>01</span> / THE VERDICT</div>
           <h2 id="results-title">Hall of <span>shame.</span></h2>
-          <p>Ranking the suspects in <strong>{analysis?.repository ?? repository}</strong>{analysis ? <span className="live-tag">ANALYSED {new Date(analysis.analysedAt).toLocaleString()}</span> : null}</p>
         </div>
         <Badge variant="outline" className={`result-badge result-badge-${state.status}`} role="status"><span className="status-dot" /> {statusLabel}</Badge>
       </div>
@@ -169,7 +168,14 @@ export default function Home() {
       <AnimatePresence>{state.status === "error" ? <motion.div key="error" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}><ErrorPanel error={state.error} onRetry={() => setAttempt((count) => count + 1)} /></motion.div> : null}</AnimatePresence>
 
       <motion.div className="preview-layout" key={repository} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .4 }}>
-        <Card className="preview-panel"><div className="panel-bar"><span className="panel-dots"><i /><i /><i /></span><code>blame.svg?repo={repository}</code><span className="panel-label">SVG EVIDENCE</span></div><div className="preview-image">{state.status === "loading" ? <div className="skeleton" aria-label="Loading leaderboard"><GitCommitHorizontal size={36} /><span>Reading the receipts…</span></div> : <img key={imagePath} src={imagePath} alt={`Git Happens leaderboard for ${repository}`} />}</div><BorderBeam className="beam" size={95} duration={10} colorFrom="#58a6ff" colorTo="#f78166" borderWidth={1} /></Card>
+        <figure className="chart-card leaderboard-card">
+          <figcaption>
+            <strong>Hall of Shame leaderboard</strong><span>Every suspect, ranked. The main README card.</span>
+            <EmbedBar snippet={snippet} copied={copied} onCopy={copy} disabled={state.status !== "ready"} label="Copy README embed for the leaderboard" />
+          </figcaption>
+          <div className="leaderboard-image">{state.status === "loading" ? <div className="skeleton" aria-label="Loading leaderboard"><GitCommitHorizontal size={36} /><span>Reading the receipts…</span></div> : <img key={imagePath} src={imagePath} alt={`Git Happens leaderboard for ${repository}`} />}</div>
+          <BorderBeam className="beam" size={95} duration={10} colorFrom="#58a6ff" colorTo="#f78166" borderWidth={1} />
+        </figure>
         <Card className="stats-panel">
           <div className="aside-heading">THE CHARGE SHEET <ArrowUpRight size={18} /></div>
           <div className="stat-row"><span>Suspects identified</span><strong>{analysis ? pad(developers.length) : "—"}</strong></div>
@@ -195,8 +201,6 @@ export default function Home() {
 
     {analysis && developers.length > 0 ? <ScoreExplainer developers={developers} selected={explained} onSelect={setExplained} /> : null}
     {analysis && developers.length > 0 ? <EvidenceBoard analysis={analysis} origin={origin} /> : null}
-
-    <section className="embed shell" aria-labelledby="embed-title"><div><div className="section-kicker"><span>04</span> / THE PUBLIC RECORD</div><h2 id="embed-title">Wear your <span>shame.</span></h2><p>Every README deserves a warning label. Copy the leaderboard embed and let visitors see the verdict. Every chart on the evidence board has its own embed too. GitHub caches images, so updates can lag.</p><ArrowDownRight size={30} className="embed-arrow" /></div><Card className="embed-code"><div className="embed-label">README.MD <span>MARKDOWN / IMAGE</span></div><div className="code-row"><code>{snippet}</code><Button type="button" onClick={copy} disabled={state.status !== "ready"} className="copy-button" aria-label="Copy README Markdown">{copied ? <><Check size={16} /> Copied</> : <><Copy size={16} /> Copy</>}</Button></div></Card></section>
 
     <footer className="shell footer"><span className="footer-brand"><img className="footer-brand-image" src="/logo/git_happens_transparent.svg" alt="Git Happens" /></span><span>Built for laughs. Based on commits, not competence.</span><span>© 2026 GIT HAPPENS</span></footer>
   </main></MotionConfig>;
