@@ -1,7 +1,7 @@
 "use client";
 
-import { AnimatePresence, MotionConfig, motion } from "motion/react";
-import { ArrowDownRight, ArrowRight, ArrowUpRight, Check, ChevronRight, Copy, GitBranch, GitCommitHorizontal, Search, ShieldAlert, Terminal, Zap } from "lucide-react";
+import { AnimatePresence, MotionConfig, motion, useReducedMotion } from "motion/react";
+import { ArrowDownRight, ArrowRight, ArrowUpRight, Check, ChevronRight, Copy, GitBranch, GitCommitHorizontal, Search, Zap } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { BorderBeam } from "@/components/ui/border-beam";
@@ -36,11 +36,15 @@ export default function Home() {
   const [origin, setOrigin] = useState("https://YOUR-DOMAIN");
   const [formError, setFormError] = useState("");
   const [copied, setCopied] = useState(false);
+  const [arrowLaunching, setArrowLaunching] = useState(false);
+  const [arrowHovered, setArrowHovered] = useState(false);
   const [state, setState] = useState<State>({ status: "loading" });
   const [attempt, setAttempt] = useState(0);
   const [tagFilter, setTagFilter] = useState<string | null>(null);
   const [explained, setExplained] = useState<string | null>(null);
   const resultRef = useRef<HTMLElement>(null);
+  const arrowTimer = useRef<number | null>(null);
+  const shouldReduceMotion = useReducedMotion();
   const imagePath = `/api/blame.svg?repo=${encodeURIComponent(repository)}`;
   const snippet = `![Git Happens leaderboard](${origin}${imagePath})`;
 
@@ -52,6 +56,10 @@ export default function Home() {
       setRepository(shared);
       setInput(shared);
     }
+  }, []);
+
+  useEffect(() => () => {
+    if (arrowTimer.current !== null) window.clearTimeout(arrowTimer.current);
   }, []);
 
   useEffect(() => {
@@ -84,7 +92,17 @@ export default function Home() {
     window.history.replaceState(null, "", `?repo=${encodeURIComponent(parsed)}`);
     setFormError("");
     setCopied(false);
-    requestAnimationFrame(() => resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
+    setArrowHovered(false);
+    if (shouldReduceMotion) requestAnimationFrame(() => resultRef.current?.scrollIntoView({ behavior: "instant", block: "start" }));
+    else {
+      setArrowLaunching(true);
+      if (arrowTimer.current !== null) window.clearTimeout(arrowTimer.current);
+      arrowTimer.current = window.setTimeout(() => {
+        setArrowLaunching(false);
+        resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+        arrowTimer.current = null;
+      }, 500);
+    }
   }
 
   async function copy() {
@@ -103,25 +121,26 @@ export default function Home() {
   const totalCommits = developers.reduce((sum, developer) => sum + developer.commits, 0);
   const totalAwards = developers.reduce((sum, developer) => sum + developer.achievements.length, 0);
   const statusLabel = state.status === "loading" ? "JUDGING…" : state.status === "ready" ? "VERDICT READY" : "MISTRIAL";
+  const arrowHopping = !shouldReduceMotion && arrowHovered && state.status !== "loading" && !arrowLaunching;
 
   return <MotionConfig reducedMotion="user"><main>
     <header className="site-header shell">
-      <a className="brand" href="#top" aria-label="Git Happens home"><span className="brand-mark"><Terminal size={22} strokeWidth={2.4} /></span><span>git<span className="brand-accent">happens</span><span className="brand-dot">.</span></span></a>
-      <div className="header-right"><span className="header-meta">THE PUBLIC REPO AUTOPSY</span><a className="header-link" href="https://github.com/Charlie-Bloomfield/Git_Happens" target="_blank" rel="noreferrer"><GitBranch size={17} /> <span>Source code</span> <ArrowUpRight size={16} /></a></div>
+      <a className="brand" href="#top" aria-label="Git Happens home">
+        <img className="brand-image" src="/logo/git_happens_transparent.svg" alt="" />
+        <span className="brand-name">git<span>happens</span></span>
+      </a>
+      <a className="header-link" href="https://github.com/Charlie-Bloomfield/Git_Happens" target="_blank" rel="noreferrer"><GitBranch size={17} /> <span>Source code</span> <ArrowUpRight size={16} /></a>
     </header>
 
     <section className="hero shell" id="top">
       <div className="hero-spotlight" aria-hidden="true"><Spotlight gradientFirst="radial-gradient(68.54% 68.72% at 55.02% 31.46%, rgba(88, 166, 255, .13) 0, rgba(88, 166, 255, .025) 55%, transparent 80%)" gradientSecond="radial-gradient(50% 50% at 50% 50%, rgba(121, 184, 255, .07), transparent 80%)" gradientThird="radial-gradient(50% 50% at 50% 50%, rgba(88, 166, 255, .04), transparent 80%)" duration={14} xOffset={36} /></div>
       <motion.div className="hero-copy" initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .55 }}>
-        <Badge variant="outline" className="eyebrow-badge"><span className="live-dot" /> THE GIT HISTORY JUDGEMENT ENGINE</Badge>
-        <h1>Your Git history<br />is <em>evidence.</em></h1>
-        <p className="hero-description">The commit log remembers everything. We read the receipts, rank the suspects, and turn your team&apos;s questionable decisions into a leaderboard.</p>
+        <h1>The Git history{" "}<br /><em>roast engine</em></h1>
         <Card className="query-card"><form onSubmit={submit} className="repo-form">
           <label htmlFor="repository">ENTER THE SCENE OF THE CRIME</label>
-          <div className="query-row"><span className="query-icon" aria-hidden="true"><Search size={19} /></span><Input id="repository" value={input} onChange={(event) => setInput(event.target.value)} placeholder="owner/repository" autoComplete="off" aria-invalid={Boolean(formError)} /><Button type="submit" size="lg" className="judge-button" disabled={state.status === "loading"}>Judge this repo <ArrowRight size={18} /></Button></div>
+          <div className="query-row"><span className="query-icon" aria-hidden="true"><Search size={19} /></span><Input id="repository" value={input} onChange={(event) => setInput(event.target.value)} placeholder="owner/repository" autoComplete="off" aria-invalid={Boolean(formError)} /><Button type="submit" size="lg" className="judge-button" disabled={state.status === "loading"} onPointerEnter={(event) => { if (event.pointerType === "mouse") setArrowHovered(true); }} onPointerLeave={() => setArrowHovered(false)}>Judge this repo <motion.span key={arrowLaunching ? "launch" : "idle"} className="judge-arrow" aria-hidden="true" initial={{ x: 0, y: 0, opacity: 1 }} animate={arrowLaunching ? { x: [0, 4, 32], y: [0, -8, 0], opacity: [1, 1, 0] } : arrowHopping ? { x: 0, y: [0, -10, 0], opacity: 1 } : { x: 0, y: 0, opacity: 1 }} transition={arrowLaunching ? { duration: .42, ease: "easeIn", times: [0, .25, 1] } : arrowHopping ? { duration: .7, ease: "easeInOut" } : { duration: .15 }}><ArrowRight size={18} /></motion.span></Button></div>
           {formError ? <p className="form-error" role="alert">{formError}</p> : <p className="form-hint">Public GitHub repositories only <span>·</span> URLs work too</p>}
         </form></Card>
-        <div className="hero-note"><ShieldAlert size={16} /><span>We read the latest 300 commits on the default branch. Scores are for entertainment, not performance reviews.</span></div>
       </motion.div>
       <motion.div className="hero-visual" initial={{ opacity: 0, x: 25 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: .6, delay: .1 }} aria-hidden="true">
         <div className="visual-orbit orbit-one" /><div className="visual-orbit orbit-two" />
@@ -133,7 +152,6 @@ export default function Home() {
           <div className="terminal-line muted"><span className="line-no">05</span><span>...the evidence is compelling</span></div>
           <div className="terminal-verdict"><span><Zap size={15} fill="currentColor" /> VERDICT</span><strong>GUILTY AS COMMITTED</strong></div>
         </div><div className="terminal-stamp">EXHIBIT A</div></Card>
-        <span className="visual-caption">NO COMMIT IS SAFE // 001</span>
       </motion.div>
     </section>
     <div className="process-strip"><div className="shell process-inner"><span><b>01</b> ENTER REPO</span><ChevronRight size={15} /><span><b>02</b> EXAMINE COMMITS</span><ChevronRight size={15} /><span><b>03</b> EXPOSE RESULTS</span></div></div>
@@ -180,7 +198,7 @@ export default function Home() {
 
     <section className="embed shell" aria-labelledby="embed-title"><div><div className="section-kicker"><span>04</span> / THE PUBLIC RECORD</div><h2 id="embed-title">Wear your <span>shame.</span></h2><p>Every README deserves a warning label. Copy the leaderboard embed and let visitors see the verdict. Every chart on the evidence board has its own embed too. GitHub caches images, so updates can lag.</p><ArrowDownRight size={30} className="embed-arrow" /></div><Card className="embed-code"><div className="embed-label">README.MD <span>MARKDOWN / IMAGE</span></div><div className="code-row"><code>{snippet}</code><Button type="button" onClick={copy} disabled={state.status !== "ready"} className="copy-button" aria-label="Copy README Markdown">{copied ? <><Check size={16} /> Copied</> : <><Copy size={16} /> Copy</>}</Button></div></Card></section>
 
-    <footer className="shell footer"><span className="footer-brand">git<span>happens</span>.</span><span>Built for laughs. Based on commits, not competence.</span><span>© 2026 GIT HAPPENS</span></footer>
+    <footer className="shell footer"><span className="footer-brand"><img className="footer-brand-image" src="/logo/git_happens_transparent.svg" alt="Git Happens" /></span><span>Built for laughs. Based on commits, not competence.</span><span>© 2026 GIT HAPPENS</span></footer>
   </main></MotionConfig>;
 }
 
